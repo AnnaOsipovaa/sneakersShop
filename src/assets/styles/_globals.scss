@@ -1,0 +1,57 @@
+@use './variables';
+
+@font-face {
+    font-family: 'Inter';
+    src: url(../fonts/Inter-Regular.otf);
+}
+
+body {
+    color: black;
+    background: variables.$body-color;
+
+    #app {
+        max-width: 1080px;
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 85px 0;
+        box-sizing: border-box; 
+        display: flex;
+        flex-direction: column;
+    
+        .container{
+            flex-grow: 1;
+            background: variables.$container-color;
+            box-shadow: variables.$box-shadow-normal;
+            border-radius: variables.$border-radius-s;
+            display: flex;
+            flex-direction: column;
+        }
+        .content{
+            padding: 45px 60px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+    }
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+input{
+    border: none;
+    outline: none;
+}
+
+button{
+    border: none;
+}
+
+@media screen and (max-width: 1130px){
+    body{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
