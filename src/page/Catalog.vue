@@ -1,16 +1,27 @@
 <script setup>
-import { onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Advertisement from '../components/Advertisement.vue';
 import CatalogItem from '../components/CatalogItem.vue';
 import { useProductsStore } from '../store/products';
 
 const productsStore = useProductsStore();
 
+const inputSearch = ref('');
+
 onMounted(async () => {
     if(!productsStore.products){
         await productsStore.getProducts();
     }
 })
+
+const productList = computed(() => {
+    if(inputSearch.value){
+        return productsStore.products.filter(product => product.title.toLowerCase().includes(inputSearch.value.toLowerCase()));
+    }else{
+        return productsStore.products;
+    }
+})
+
 </script>
 
 <template>
@@ -23,13 +34,13 @@ onMounted(async () => {
                 <div class="input-search__img">
                     <img src="image/loupe.svg" alt="поиск">
                 </div>
-                <input type="text" class="input-search__input" placeholder="Поиск...">
+                <input type="text" v-model="inputSearch" class="input-search__input" placeholder="Поиск...">
             </div>
         </div>
 
         <div class="sneakers-list">
             <CatalogItem 
-                v-for="product in productsStore.products" 
+                v-for="product in productList" 
                 :key=product.id
                 :title="product.title"
                 :img="product.imageUrl"
@@ -52,18 +63,14 @@ onMounted(async () => {
     padding-bottom: 36px;
 
     .input-search{
-        max-width: 250px;
-        max-height: 45px;
-        display: flex;
-        align-items: center;
-        gap: 13px;
-        border: 1px solid variables.$text-color1;
-        border-radius: 10px;
-        padding: 15px 18px;
-        box-sizing: border-box;
-
+        position: relative;
+    
         .input-search__input{
-            width: 100%; 
+            max-width: 250px;
+            box-sizing: border-box;
+            border: 1px solid variables.$text-color1;
+            border-radius: 10px;
+            padding: 13px 18px 13px 46px;
             font-weight: 400;
             font-size: 14px;
             line-height: 100%;
@@ -76,6 +83,9 @@ onMounted(async () => {
 
         .input-search__img{
             @include mixins.flex-center;
+            position: absolute;
+            top: 15px;
+            left: 18px;
         }
     }
 }
