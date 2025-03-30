@@ -34,7 +34,6 @@ watch(
             currentSlide.value = advertisementList.value.length - 1;
         }
 
-        listSlide.value.style.transition = `transform 1s`;
         listSlide.value.style.transform = `translateX(-${currentSlide.value * listSlide.value.offsetWidth}px)`;
     }
 )
@@ -88,6 +87,8 @@ $arrow-size: 35px;
     .slider__list {
       max-width: 100%;
       display: flex;
+      transition: 1s;
+      transform: translateX(0px);
     }
 
     .slider__list-item{

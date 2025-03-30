@@ -1,0 +1,65 @@
+<script setup>
+import { computed } from 'vue';
+import { StringUtils } from '../utils/string-utils';
+
+const props = defineProps({
+    title: String,
+    img: String,
+    price: Number
+})
+
+const priceFormatted = computed(() => {
+    return StringUtils.toPriceFormat(props.price) + ' руб.';
+})
+</script>
+
+
+<template>
+    <div class="cart-item">
+        <div class="cart-item__img">
+            <img :src="'image/' + img" alt="фото">
+        </div>
+        <div class="cart-item__details">
+            <div class="cart-item__title product-title">{{ title }}</div>
+            <div class="price">{{ priceFormatted }}</div>
+        </div>
+        <div class="cart-item__delete">
+            <img src="image/icon-delete.png" alt="удалить">
+        </div>
+    </div>
+</template>
+
+<style lang="scss" scoped>
+@use "../assets/styles/variables.scss";
+
+.cart-item{
+    border: 1px solid variables.$text-color1;
+    border-radius: variables.$border-radius-s;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+
+    .cart-item__img{
+        width: 70px;
+        height: 70px;
+        flex-shrink: 0;
+
+        img{
+            max-width: 100%;
+        }
+    }
+
+    .cart-item__details{
+        margin-left: 21px;
+
+        .cart-item__title{
+            margin-bottom: 8px;
+        }
+    }
+
+    .cart-item__delete{
+        align-self: flex-end;
+        cursor: pointer;
+    }
+}
+</style>

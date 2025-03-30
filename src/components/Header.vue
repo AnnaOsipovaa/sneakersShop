@@ -1,3 +1,7 @@
+<script setup>
+defineEmits(['openCart']);
+</script>
+
 <template>
   <header class="header">
     <RouterLink :to="{ name: 'catalog'}" class="logo">
@@ -12,12 +16,12 @@
     <nav class="header__menu">
       <ul class="header__menu-list">
         <li class="header__menu-item">
-          <RouterLink :to="{ name: 'favorites'}" class="header__menu-link">
+          <div @click="$emit('openCart')" class="header__menu-link">
             <div class="header__menu-icon">
               <img src="image/icon-card.svg" alt="card" />
             </div>
             <div class="header__menu-title header__menu-title_bold">1205 руб.</div>
-          </RouterLink>
+          </div>
         </li>
         <li class="header__menu-item">
           <RouterLink :to="{ name: 'favorites'}" class="header__menu-link">

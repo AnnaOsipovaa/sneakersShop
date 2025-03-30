@@ -1,17 +1,10 @@
 <script setup>
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
+defineEmits(['goBack']);
 defineProps({
     title: String,
     description: String,
     img: String
 })
-
-function goBack(){
-    router.go(-1);
-}
 </script>
 
 <template>
@@ -19,13 +12,13 @@ function goBack(){
         <div class="not-found__img">
             <img :src="'image/'+ img" alt="">
         </div>
-        <div class="not-found__title title_s">{{ title }}</div>
+        <div class="not-found__title title_xs">{{ title }}</div>
         <div class="not-found__text">{{ description }}</div>
-        <button type="button" class="not-found__btn" @click="goBack">
-            <div class="not-found__btn-img">
+        <button type="button" class="not-found__btn button-green" @click="$emit('goBack')">
+            <div class="button-green__btn">
                 <img src="image/arrow-back.png" alt="назад">
             </div>
-            <div class="not-found__btn-text">Вернуться назад</div>
+            <div class="not-found__btn-text button-green__text">Вернуться назад</div>
         </button>
     </div>
 </template>
@@ -35,14 +28,14 @@ function goBack(){
 @use "../assets/styles/mixins.scss";
 
 .not-found{
-    text-align: center;
-    display: flex;
+    @include mixins.flex-center;
     flex-direction: column;
-    align-items: center;
+    flex-grow: 1;
+    text-align: center;
 
     .not-found__img{
-        width: 70px;
-        height: 70px;
+        width: 120px;
+        height: 120px;
         margin-bottom: 31px;
 
         img{
@@ -63,26 +56,7 @@ function goBack(){
     }
 
     .not-found__btn{
-        background-color: variables.$button-color;
-        color: variables.$text-color4;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        padding: 17px 31px;
-        border-radius: 18px;
-        max-width: 245px;
-        cursor: pointer;
-        font-size: 16px;
-        line-height: 100%;
-        transition: 0.3s;
-
-        &:hover{
-            background: variables.$button-hover-color;
-        }
-
-        .not-found__btn-img{
-            @include mixins.flex-center;
-        }
+        width: 245px;
     }
 }
 

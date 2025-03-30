@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from "vue"
+import { StringUtils } from "../utils/string-utils";
 
 const props = defineProps({
     title: String,
@@ -18,11 +19,7 @@ const inCartImg = computed(() => {
 });
 
 const priceFormatted = computed(() => {
-    if(props.price){ // *** убрать как сдлеаю бекенд
-        return props.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' руб.';
-    }else{
-        return 0
-    }
+    return StringUtils.toPriceFormat(props.price) + ' руб.';
 })
 </script>
 
@@ -34,7 +31,7 @@ const priceFormatted = computed(() => {
         <div class="catalog-item__img">
             <img :src="'image/' + img" alt="фото">
         </div>
-        <div class="catalog-item__title">{{ title }}</div>
+        <div class="catalog-item__title product-title">{{ title }}</div>
         <div class="catalog-item__block-price">
             <div class="catalog-item__price">
                 <div class="catalog-item__price-title">Цена:</div>
@@ -79,9 +76,6 @@ const priceFormatted = computed(() => {
     }
 
     .catalog-item__title{
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 100%;
         margin-bottom: 14px;
     }
 
@@ -104,5 +98,4 @@ const priceFormatted = computed(() => {
         }
     }
 }
-
 </style>
