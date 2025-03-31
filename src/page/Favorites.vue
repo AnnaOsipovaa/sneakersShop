@@ -14,13 +14,13 @@ const loaderOn = ref(false);
 onMounted(async () => {
     loaderOn.value = true;
 
-    if(!productsStore.favoritesProducts){
-        await productsStore.getFavoritesProducts();
+    if(!productsStore.productsInFavorites){
+        await productsStore.getProductsInFavorites();
     }
 
     loaderOn.value = false;
 
-    if(productsStore.favoritesProducts.length === 0){
+    if(productsStore.productsInFavorites.length === 0){
         notFavorites.value = true;
     }
 })

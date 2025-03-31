@@ -1,56 +1,77 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useProductsStore } from '../store/products';
 import CartItem from './CartItem.vue';
 import NotFound from '../components/NotFound.vue';
+import { StringUtils } from '../utils/string-utils';
+
+const productsStore = useProductsStore();
 
 const emit = defineEmits(['closeCart']);
-defineProps({
+const props = defineProps({
     openCart: Boolean
 })
 
-const notCartItems = ref(false);
 const closeCart = ref(false);
 
 function closingCart(){
     closeCart.value = true;
     emit('closeCart');
 }
+
+async function deleteToCart(product){
+    productsStore.deleteToCart(product);
+}
+
+const productInCart = computed(() => {
+    return productsStore.products.filter(product => product.inCart === true);
+});
+
+const cartSum = computed(() => {
+  return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
+})
 </script>
 
 <template>
-    <div @click="closingCart" class="fon" :class="{ 'fon__close' : !openCart}"></div>
-    <div class="cart" :class="{ 'cart__open' : openCart, 'cart__close' : closeCart && !openCart}">
-        <div class="cart__title title_s">Корзина</div>
-        <template v-if="!notCartItems">
-            <div class="cart__list">
-                <CartItem
-                    title="Мужские Кроссовки Nike Air Max 270"
-                    img="/sneakers/sneakers-3.jpg"
-                    :price="12999"
-                ></CartItem>
-            </div>
-            <div class="cart__price">
-                <div class="cart__price-title">Итого:</div>
-                <div class="cart__price-line"></div>
-                <div class="price">21498 руб.</div>
-            </div>
-            <div class="cart__action">
-                <button type="button" class="cart__btn button-green">
-                    <div class="button-green__text">Оформить заказ</div>
-                    <div class="button-green__btn">
-                        <img src="image/arrow-next.svg" alt="вперед">
-                    </div>
-                </button>
-            </div>
-        </template>
+    <div>
+        <div @click="closingCart" class="fon" :class="{ 'fon__open' : openCart, 'fon__close' : closeCart && !openCart}"></div>
+        <div class="cart" :class="{ 'cart__open' : openCart, 'cart__close' : closeCart && !openCart}">
+            <div class="cart__title title_s">Корзина</div>
+            <template v-if="productInCart.length !== 0">
+                <div class="cart__list">
+                    <CartItem v-for="product in productInCart" 
+                        :key="product.id"
+                        @deleteToCart = deleteToCart(product)
+                        :title="product.title"
+                        :img="product.imageUrl"
+                        :price="product.price"
+                    ></CartItem>
+                </div>
+                <div class="cart__price">
+                    <div class="cart__price-title">Итого:</div>
+                    <div class="cart__price-line"></div>
+                    <div class="price">{{ cartSum }}</div>
+                </div>
+                <div class="cart__action">
+                    <button type="button" class="cart__btn button-green">
+                        <div class="button-green__text">Оформить заказ</div>
+                        <div class="button-green__btn">
+                            <img src="image/arrow-next.svg" alt="вперед">
+                        </div>
+                    </button>
+                </div>
+            </template>
 
-        <NotFound v-else @goBack="closingCart"
-            title="Корзина пустая"
-            description="Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."
-            img="box.png"
+            <NotFound v-else 
+                @goBack="closingCart"
+                title="Корзина пуста"
+                description="Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."
+                img="box.png"
             >
-        </NotFound>
+            </NotFound>
+        </div>
     </div>
+    
 </template>
 
 <style lang="scss" scoped>
@@ -58,6 +79,7 @@ function closingCart(){
 @use "../assets/styles/mixins.scss";
 
 .fon{
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -65,10 +87,6 @@ function closingCart(){
     height: 100%;
     z-index: 5;
     background: variables.$fon-color;
-}
-
-.fon__close{
-    display: none;
 }
 
 .cart{
@@ -95,6 +113,7 @@ function closingCart(){
         gap: 20px;
         flex-grow: 1;
         margin-bottom: 30px;
+        overflow-y: auto;
     }
 
     .cart__price{
@@ -135,6 +154,19 @@ function closingCart(){
     animation-fill-mode: forwards;
 }
 
+.fon__open{
+    display: block;
+    animation-name: fonOpening;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.fon__close{ 
+    animation-name: fonClosing;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
 @keyframes cartOpening{
     0%{
         transform: translateX(100%);
@@ -150,6 +182,26 @@ function closingCart(){
     }
     100%{
         transform: translateX(100%);
+    }
+}
+
+@keyframes fonOpening{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+@keyframes fonClosing{
+    0%{
+        opacity: 1;
+        display: block;
+    }
+    100%{
+        opacity: 0;
+        display: none;
     }
 }
 </style>

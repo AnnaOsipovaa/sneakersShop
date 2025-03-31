@@ -9,7 +9,7 @@ const productsStore = useProductsStore();
 const inputSearch = ref('');
 
 onMounted(async () => {
-    if(!productsStore.products){
+    if(!productsStore.products.value){
         await productsStore.getProducts();
     }
 })
@@ -21,6 +21,14 @@ const productList = computed(() => {
         return productsStore.products;
     }
 })
+
+function addToCart(product){
+    productsStore.addToCart(product);
+}
+
+function deleteToCart(product){
+    productsStore.deleteToCart(product);
+}
 
 </script>
 
@@ -42,11 +50,13 @@ const productList = computed(() => {
             <CatalogItem 
                 v-for="product in productList" 
                 :key=product.id
+                @addToCart = addToCart(product)
+                @deleteToCart = deleteToCart(product)
                 :title="product.title"
                 :img="product.imageUrl"
                 :price="product.price"
                 :inFavorites="false"
-                :inCart="false">
+                :inCart="product.inCart">
             </CatalogItem>
         </div>
     </div>

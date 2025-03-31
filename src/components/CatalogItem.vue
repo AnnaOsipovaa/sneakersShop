@@ -2,6 +2,7 @@
 import { computed } from "vue"
 import { StringUtils } from "../utils/string-utils";
 
+defineEmits(['addToCart', 'deleteToCart']);
 const props = defineProps({
     title: String,
     img: String,
@@ -12,10 +13,6 @@ const props = defineProps({
 
 const inFavoritesImg = computed(() => {
     return 'image/' + (props.inFavorites ? 'is-favorites-on.svg' : 'is-favorites-off.svg');
-});
-
-const inCartImg = computed(() => {
-    return 'image/' + (props.inCart ? 'in-cart-on.svg' : 'in-cart-off.svg');
 });
 
 const priceFormatted = computed(() => {
@@ -37,8 +34,13 @@ const priceFormatted = computed(() => {
                 <div class="catalog-item__price-title">Цена:</div>
                 <div class="price">{{ priceFormatted }}</div>
             </div>
-            <div class="catalog-item__in-cart">
-                <img :src="inCartImg" alt="в корзину">
+            <div class="catalog-item__action">
+                <div v-if="!inCart" class="catalog-item__action-item" @click="$emit('addToCart')">
+                    <img src="image/in-cart-off.svg" alt="добавить в корзину">
+                </div>
+                <div v-else class="catalog-item__action-item" @click="$emit('deleteToCart')">
+                    <img src="image/in-cart-on.svg" alt="удалить из корзины">
+                </div>
             </div>
         </div>
     </div>
@@ -93,8 +95,13 @@ const priceFormatted = computed(() => {
             margin-bottom: 2px;
         }
 
-        .catalog-item__in-cart{
-            cursor: pointer;
+        .catalog-item__action{
+            width: 31px;
+            height: 32px;
+            
+            .catalog-item__action-item{
+                cursor: pointer;
+            }
         }
     }
 }

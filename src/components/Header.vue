@@ -1,5 +1,14 @@
 <script setup>
+import { computed } from 'vue';
+import { useProductsStore } from '../store/products';
+import { StringUtils } from '../utils/string-utils';
+const productsStore = useProductsStore();
+
 defineEmits(['openCart']);
+
+const cartSum = computed(() => {
+  return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
+})
 </script>
 
 <template>
@@ -20,7 +29,7 @@ defineEmits(['openCart']);
             <div class="header__menu-icon">
               <img src="image/icon-card.svg" alt="card" />
             </div>
-            <div class="header__menu-title header__menu-title_bold">1205 руб.</div>
+            <div class="header__menu-title header__menu-title_bold">{{ cartSum }}</div>
           </div>
         </li>
         <li class="header__menu-item">

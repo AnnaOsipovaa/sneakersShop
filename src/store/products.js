@@ -1,10 +1,23 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { ProductServices } from '../services/products-services';
 
 export const useProductsStore = defineStore('products', () => {
-  const favoritesProducts = ref(null);
-  const products = ref(null);
+  const products = ref([]);
+  const productsInFavorites = ref(null);
+  let listIdProductsInCart = [];
+
+  const cartSum = computed(() => {
+    let sum = 0;
+
+    products.value.forEach((product) => {
+      if (product.inCart) {
+        sum += product.price;
+      }
+    })
+
+    return sum;
+  }); 
 
   async function getProducts() {
     const response = await ProductServices.getProducts();
@@ -13,25 +26,66 @@ export const useProductsStore = defineStore('products', () => {
     } else {
       console.log('Ошибка загрузки');
     }
+
+    setInCartFlag();
   }
 
-  async function getFavoritesProducts() {
-    
-    /*
-    const response = await ProductServices.getProducts();
-    if (!response.error && response.info) {
-      favoritesProducts.value = favoritesProducts.info;
-    } else {
-      console.log('Ошибка загрузки');
-    }*/
-    console.log('запрос избранного');
-    favoritesProducts.value = [];
+  async function setInCartFlag() {
+    if (listIdProductsInCart.length === 0) {
+      getListIdProductsInCart();
+    }
+
+    products.value.forEach(product => {
+      const indexProductInCartList = listIdProductsInCart.findIndex(catrItem => catrItem === product.id);
+      product.inCart = indexProductInCartList > -1 ? true : false;
+    });
+  }
+
+  function getListIdProductsInCart() {
+    let result = [];
+    const listId = localStorage.getItem('cart');
+    if (listId) {
+      const listIdJson = JSON.parse(listId);
+      if (listIdJson) {
+        result = listIdJson;
+      }
+    }
+    listIdProductsInCart = result;
+  }
+
+  function saveListIdProductsInCartInLocalStorage(list) {
+    localStorage.setItem('cart', JSON.stringify(list));
+  }
+
+  async function addToCart(product) {
+    product.inCart = true;
+    listIdProductsInCart.unshift(product.id);
+    saveListIdProductsInCartInLocalStorage(listIdProductsInCart);
+  }
+
+  async function deleteToCart(product) {
+    product.inCart = false;
+
+    let indexProduct = listIdProductsInCart.findIndex(idProductInCart => idProductInCart === product.id);
+
+    if (indexProduct > -1) {
+      listIdProductsInCart.splice(indexProduct, 1);
+      saveListIdProductsInCartInLocalStorage(listIdProductsInCart);
+    }
+  }
+
+  async function getProductsInFavorites() {
+    productsInFavorites.value = [];
   }
 
   return {
     products,
-    favoritesProducts,
+    productsInFavorites,
+    listIdProductsInCart,
+    cartSum,
     getProducts,
-    getFavoritesProducts
+    getProductsInFavorites,
+    addToCart,
+    deleteToCart
   }
 })

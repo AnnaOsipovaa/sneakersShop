@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { StringUtils } from '../utils/string-utils';
 
+defineEmits(['deleteToCart']);
 const props = defineProps({
     title: String,
     img: String,
@@ -23,8 +24,8 @@ const priceFormatted = computed(() => {
             <div class="cart-item__title product-title">{{ title }}</div>
             <div class="price">{{ priceFormatted }}</div>
         </div>
-        <div class="cart-item__delete">
-            <img src="image/icon-delete.png" alt="удалить">
+        <div class="cart-item__delete" @click="$emit('deleteToCart')">
+            <img src="image/icon-delete.png" alt="удалить из корзины">
         </div>
     </div>
 </template>
