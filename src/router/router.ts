@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, Router, RouteRecordRaw } from 'vue-router';
 import Catalog from '../page/Catalog.vue';
 import Favorites from '../page/Favorites.vue';
 
-const routes = [
+const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'catalog',
@@ -15,11 +15,12 @@ const routes = [
     },
     {
         path: '/:pathMatch(.*)*',
+        name: 'not-found',
         redirect: { name: 'catalog' }
     }
 ];
 
-export const router = createRouter({
+export const router: Router = createRouter({
     history: createWebHistory(),
-    routes
+    routes: routes
 }); 

@@ -5,7 +5,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-    entry: './src/main.js',
+    entry: './src/main.ts',
     output: {
         filename: 'main.js',
         path: path.resolve(__dirname, 'dist'),
@@ -15,7 +15,11 @@ module.exports = {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                use: 'vue-loader'
+            },
+            {
+                test: /\.ts$/,
+                use: 'ts-loader'
             },
             {
                 test: /\.scss$/i,
@@ -27,6 +31,9 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        extensions: ['.ts', '.js'],
+    },
     plugins: [
         new Dotenv(),
         new HtmlWebpackPlugin({
@@ -34,9 +41,9 @@ module.exports = {
         }),
         new VueLoaderPlugin(),
         new webpack.DefinePlugin({
-            __VUE_OPTIONS_API__: JSON.stringify(false),   
-            __VUE_PROD_DEVTOOLS__: JSON.stringify(false),  
-            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),   
+            __VUE_OPTIONS_API__: JSON.stringify(false),
+            __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
         }),
     ],
     devServer: {
