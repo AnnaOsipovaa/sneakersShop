@@ -9,7 +9,7 @@ const productsStore = useProductsStore();
 const inputSearch = ref('');
 
 onMounted(async () => {
-    if(!productsStore.products.value){
+    if(productsStore.products.length === 0){
         await productsStore.getProducts();
     }
 })

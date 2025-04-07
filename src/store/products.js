@@ -58,20 +58,19 @@ export const useProductsStore = defineStore('products', () => {
   }
 
   async function addToCart(product) {
-    product.inCart = true;
     listIdProductsInCart.unshift(product.id);
     saveListIdProductsInCartInLocalStorage(listIdProductsInCart);
+    product.inCart = true;
   }
 
   async function deleteToCart(product) {
-    product.inCart = false;
-
     let indexProduct = listIdProductsInCart.findIndex(idProductInCart => idProductInCart === product.id);
 
     if (indexProduct > -1) {
       listIdProductsInCart.splice(indexProduct, 1);
       saveListIdProductsInCartInLocalStorage(listIdProductsInCart);
     }
+    product.inCart = false;
   }
 
   async function getProductsInFavorites() {
