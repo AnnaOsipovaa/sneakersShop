@@ -1,12 +1,13 @@
-<script setup>
-import { computed, onMounted, ref, watch } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, ref, watch, Ref } from 'vue';
+import { ProductType } from "@/types/product.type";
 import Advertisement from '../components/Advertisement.vue';
 import CatalogItem from '../components/CatalogItem.vue';
 import { useProductsStore } from '../store/products';
 
 const productsStore = useProductsStore();
 
-const inputSearch = ref('');
+const inputSearch: Ref<string> = ref('');
 
 onMounted(async () => {
     if(productsStore.products.length === 0){
@@ -14,19 +15,19 @@ onMounted(async () => {
     }
 })
 
-const productList = computed(() => {
+const productList = computed<ProductType[]>(() => {
     if(inputSearch.value){
-        return productsStore.products.filter(product => product.title.toLowerCase().includes(inputSearch.value.toLowerCase()));
+        return productsStore.products.filter((product : ProductType) => product.title.toLowerCase().includes(inputSearch.value.toLowerCase()));
     }else{
         return productsStore.products;
     }
 })
 
-function addToCart(product){
+function addToCart(product: ProductType): void {
     productsStore.addToCart(product);
 }
 
-function deleteToCart(product){
+function deleteToCart(product: ProductType): void {
     productsStore.deleteToCart(product);
 }
 

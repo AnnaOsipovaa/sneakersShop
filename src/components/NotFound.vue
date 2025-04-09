@@ -1,10 +1,13 @@
-<script setup>
-defineEmits(['goBack']);
-defineProps({
-    title: String,
-    description: String,
-    img: String
-})
+<script setup lang="ts">
+defineEmits<{
+    'goBack': []
+}>();
+
+defineProps<{
+    title: string,
+    description: string,
+    img: string
+}>();
 </script>
 
 <template>

@@ -1,9 +1,10 @@
-<script setup>
-import { onMounted, ref, useTemplateRef, watch } from "vue";
+<script setup lang="ts">
+import { onMounted, ref, useTemplateRef, watch, Ref, ShallowRef } from "vue";
+import { AdvertisementType } from "@/types/advertisement.type";
 
-const currentSlide = ref(0);
-const listSlide = useTemplateRef("slider-list");
-const advertisementList = ref([]);
+const currentSlide: Ref<number> = ref(0);
+const listSlide = useTemplateRef<HTMLElement>("slider-list");
+const advertisementList: Ref<AdvertisementType[]> = ref([]);
 
 onMounted(() => {
     advertisementList.value = [
@@ -26,19 +27,24 @@ onMounted(() => {
 })
 
 watch( 
-    () => currentSlide.value, 
-    () => {
-        if (currentSlide.value === advertisementList.value.length) {
-            currentSlide.value = 0;
-        } else if (currentSlide.value === -1) {
-            currentSlide.value = advertisementList.value.length - 1;
-        }
+  () => currentSlide.value, 
+  () => {
 
-        listSlide.value.style.transform = `translateX(-${currentSlide.value * listSlide.value.offsetWidth}px)`;
-    }
+      if(!listSlide || !listSlide.value) return;
+
+      if (currentSlide.value === advertisementList.value.length) {
+          currentSlide.value = 0;
+      } else if (currentSlide.value === -1) {
+          currentSlide.value = advertisementList.value.length - 1;
+      }
+
+      listSlide.value.style.transform = `translateX(-${currentSlide.value * listSlide.value.offsetWidth}px)`;
+  }
 )
 
 window.addEventListener('resize', () => {
+  if(!listSlide || !listSlide.value) return;
+
   currentSlide.value = 0;
   listSlide.value.style.transform = `translateX(0px)`;
 });

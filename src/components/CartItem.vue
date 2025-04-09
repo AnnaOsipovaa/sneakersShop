@@ -1,15 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { StringUtils } from '../utils/string-utils';
 
 defineEmits(['deleteToCart']);
-const props = defineProps({
-    title: String,
-    img: String,
-    price: Number
-})
+const props = defineProps<{
+    title: string,
+    img: string,
+    price: number
+}>();
 
-const priceFormatted = computed(() => {
+const priceFormatted = computed<string>(() => {
     return StringUtils.toPriceFormat(props.price) + ' руб.';
 })
 </script>

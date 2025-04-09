@@ -1,5 +1,6 @@
-<script setup>
-import { computed, ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref, Ref } from 'vue';
+import { ProductType } from "@/types/product.type";
 import { useProductsStore } from '../store/products';
 import CartItem from './CartItem.vue';
 import NotFound from '../components/NotFound.vue';
@@ -7,28 +8,31 @@ import { StringUtils } from '../utils/string-utils';
 
 const productsStore = useProductsStore();
 
-const emit = defineEmits(['closeCart']);
-const props = defineProps({
-    openCart: Boolean
-})
+const emit = defineEmits<{
+    'closeCart': []
+}>();
 
-const closeCart = ref(false);
+const props = defineProps<{
+    openCart: boolean
+}>();
 
-function closingCart(){
+const closeCart: Ref<boolean> = ref(false);
+
+function closingCart(): void {
     closeCart.value = true;
     emit('closeCart');
 }
 
-async function deleteToCart(product){
+async function deleteToCart(product: ProductType): Promise<void> {
     productsStore.deleteToCart(product);
 }
 
-const productInCart = computed(() => {
-    return productsStore.products.filter(product => product.inCart === true);
+const productInCart = computed<ProductType[]>(() => {
+    return productsStore.products.filter((product: ProductType) => product.inCart === true);
 });
 
-const cartSum = computed(() => {
-  return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
+const cartSum = computed<string>(() => {
+    return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
 })
 </script>
 

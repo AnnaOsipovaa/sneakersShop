@@ -1,13 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { RouterView } from 'vue-router';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 
 import Header from './components/Header.vue';
 import Cart from './components/Cart.vue';
 
-const openCart = ref(false);
+const openCart: Ref<boolean> = ref(false);
 
-function toggleCart(){
+function toggleCart(): void {
     openCart.value = !openCart.value;
 }
 </script>

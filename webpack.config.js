@@ -19,7 +19,10 @@ module.exports = {
             },
             {
                 test: /\.ts$/,
-                use: 'ts-loader'
+                loader: 'ts-loader',
+                options: {
+                    appendTsSuffixTo: [/\.vue$/]
+                }
             },
             {
                 test: /\.scss$/i,

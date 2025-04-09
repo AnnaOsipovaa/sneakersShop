@@ -1,5 +1,5 @@
-<script setup>
-import { onMounted, ref } from 'vue';
+<script setup lang="ts">
+import { onMounted, ref, Ref } from 'vue';
 import { useProductsStore } from '../store/products';
 import NotFound from '../components/NotFound.vue';
 import Loader from '../components/Loader.vue';
@@ -8,8 +8,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const productsStore = useProductsStore();
 
-const notFavorites = ref(false);
-const loaderOn = ref(false);
+const notFavorites: Ref<boolean> = ref(false);
+const loaderOn: Ref<boolean> = ref(false);
 
 onMounted(async () => {
     loaderOn.value = true;
@@ -25,7 +25,7 @@ onMounted(async () => {
     }
 })
 
-function goBack(){
+function goBack(): void {
     router.go(-1);
 }
 </script>

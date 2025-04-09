@@ -1,21 +1,21 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue"
 import { StringUtils } from "../utils/string-utils";
 
 defineEmits(['addToCart', 'deleteToCart']);
-const props = defineProps({
-    title: String,
-    img: String,
-    price: Number,
-    inFavorites: Boolean,
-    inCart: Boolean
-})
+const props = defineProps<{
+    title: string,
+    img: string,
+    price: number,
+    inFavorites: boolean,
+    inCart: boolean
+}>();
 
-const inFavoritesImg = computed(() => {
+const inFavoritesImg = computed<string>(() => {
     return 'image/' + (props.inFavorites ? 'is-favorites-on.svg' : 'is-favorites-off.svg');
 });
 
-const priceFormatted = computed(() => {
+const priceFormatted = computed<string>(() => {
     return StringUtils.toPriceFormat(props.price) + ' руб.';
 })
 </script>

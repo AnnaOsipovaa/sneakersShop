@@ -1,14 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { useProductsStore } from '../store/products';
 import { StringUtils } from '../utils/string-utils';
 const productsStore = useProductsStore();
 
-defineEmits(['openCart']);
+defineEmits<{
+  'openCart': []
+}>();
 
-const cartSum = computed(() => {
+const cartSum = computed<string>(() => {
   return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
-})
+});
 </script>
 
 <template>

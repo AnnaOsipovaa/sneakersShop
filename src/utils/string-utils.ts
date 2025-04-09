@@ -1,6 +1,6 @@
-export class StringUtils{
-    static toPriceFormat(price: number) :string{
-        if(!price || price === 0){
+export class StringUtils {
+    static toPriceFormat(price: number): string {
+        if (!price || price === 0) {
             return '0';
         }
 
