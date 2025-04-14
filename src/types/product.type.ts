@@ -3,5 +3,6 @@ export type ProductType = {
     title: string,
     price: number,
     imageUrl: string,
-    inCart: boolean
+    inCart: boolean,
+    inFavorites: boolean
 }

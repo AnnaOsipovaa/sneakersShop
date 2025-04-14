@@ -52,3 +52,115 @@
         @include mixins.flex-center;
     }
 }
+
+.input-search{
+    position: relative;
+
+    .input-search__input{
+        width: 250px;
+        box-sizing: border-box;
+        border: 1px solid variables.$text-color1;
+        border-radius: 10px;
+        padding: 13px 18px 13px 46px;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 100%;
+
+        &:placeholder{
+            font-size: 14px;
+            color: variables.$placeholder-color;
+        }
+    }
+
+    .input-search__img{
+        @include mixins.flex-center;
+        position: absolute;
+        top: 15px;
+        left: 18px;
+    }
+}
+
+@media screen and (max-width: 1130px){
+    .title_m{
+        font-size: 25px;
+    }
+
+    .title_s{
+        font-size: 17px;
+    }
+    
+    .title_xs{
+        font-size: 17px;
+    }
+
+    .product-title{
+        font-size: 12px;
+    }   
+    
+    .price{
+        font-size: 12px;
+    }
+
+    .input-search{
+        .input-search__input{
+            width: 100%;
+        }
+    }
+}
+
+@media screen and (max-width: 600px){
+    .title_m{
+        font-size: 20px;
+    } 
+
+    .input-search{
+        .input-search__input{
+            padding: 11px 16px 11px 40px;
+            font-size: 12px;
+    
+            &:placeholder{
+                font-size: 12px;
+            }
+        }
+    
+        .input-search__img{
+            top: 12px;
+            left: 15px;
+        }
+    }
+
+    .button-green{
+        padding: 15px 23px;
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 370px){
+    .title_m{
+        font-size: 18px;
+    }
+
+    .product-title{
+        font-size: 11px;
+    }   
+    
+    .price{
+        font-size: 11px;
+    }
+
+    .input-search{
+        .input-search__input{
+            padding: 9px 12px 9px 34px;
+            font-size: 11px;
+    
+            &:placeholder{
+                font-size: 11px;
+            }
+        }
+    
+        .input-search__img{
+            top: 8px;
+            left: 12px;
+        }
+    }
+}

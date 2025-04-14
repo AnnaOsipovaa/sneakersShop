@@ -31,6 +31,13 @@ body {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+
+            .sneakers-list{
+                display: grid;
+                justify-content: space-between;
+                gap: 40px;
+                grid-template-columns: repeat(4, minmax(150px, 210px));
+            }
         }
     }
 }
@@ -53,5 +60,64 @@ button{
     body{
         padding-left: 20px;
         padding-right: 20px;
+
+        #app {
+            .content{
+                .sneakers-list{
+                    gap: 15px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 900px){
+    body{
+        padding-left: 15px;
+        padding-right: 15px;
+
+        #app {
+            padding-top: 55px;
+            padding-bottom: 35px;
+            .content{
+                padding: 30px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 800px){
+    body{
+        #app {
+            .content{
+                .sneakers-list{
+                    grid-template-columns: repeat(3, minmax(150px, 210px));
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 600px){
+    body{
+        #app {
+            .content{
+                padding: 15px;
+
+                .sneakers-list{
+                    gap: 10px;
+                    justify-content: center;
+                    grid-template-columns: repeat(2, minmax(auto, 210px));
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 370px){
+    body{
+        padding-left: 10px;
+        padding-right: 10px;
+ 
     }
 }

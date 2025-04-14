@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useProductsStore } from '../store/products';
 import { StringUtils } from '../utils/string-utils';
 const productsStore = useProductsStore();
@@ -11,6 +11,7 @@ defineEmits<{
 const cartSum = computed<string>(() => {
   return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
 });
+
 </script>
 
 <template>
@@ -24,6 +25,11 @@ const cartSum = computed<string>(() => {
         <div class="logo__text-description">Магазин лучших кроссовок</div>
       </div>
     </RouterLink>
+    <div class="header__burger-menu">
+      <span class="header__burger-menu-item"></span>
+      <span class="header__burger-menu-item"></span>
+      <span class="header__burger-menu-item"></span>
+    </div>
     <nav class="header__menu">
       <ul class="header__menu-list">
         <li class="header__menu-item">
@@ -40,6 +46,7 @@ const cartSum = computed<string>(() => {
               <img src="image/icon-heart.svg " alt="heart" />
             </div>
             <div class="header__menu-title">Избранное</div>
+            <div class="header__menu-count" v-if="productsStore.favoritesCount">{{ productsStore.favoritesCount }}</div>
           </RouterLink>
         </li>
         <li class="header__menu-item">
@@ -98,6 +105,20 @@ const cartSum = computed<string>(() => {
     }
   }
 
+  .header__burger-menu{
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+
+    .header__burger-menu-item{
+      background: variables.$text-color;
+      width: 35px;
+      height: 3px;
+      border-radius: 20px;
+    }
+  }
+
   .header__menu{
     .header__menu-list {
       list-style-type: none;
@@ -111,6 +132,7 @@ const cartSum = computed<string>(() => {
           align-items: center;
           gap: 8px;
           cursor: pointer;
+          position: relative;
           transition: 0.3s;
 
           &:hover {
@@ -132,6 +154,133 @@ const cartSum = computed<string>(() => {
             font-weight: 600;
             color: variables.$text-color-dark;
           }
+
+          .header__menu-count{
+            min-width: 18px;
+            min-height: 18px;
+            box-sizing: border-box;
+            position: absolute;
+            border-radius: 50%;
+            font-size: 11px;
+            top: -12px;
+            right: -16px;
+            background: variables.$background-color;
+            color: variables.$text-color4;
+            @include mixins.flex-center;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 1130px){
+  .header {
+    position: relative;
+
+    .header__burger-menu{
+      display: flex;
+
+      &:hover ~ .header__menu{
+        display: block;
+      }
+    }
+
+    .header__menu{
+      display: none;
+      min-width: 150px;
+      position: absolute;
+      right: 42px;
+      top: 73px;
+      z-index: 4;
+      background: variables.$container-color;
+      box-shadow: 0 10px 14px 0 rgb(0 0 0 / 20%);
+      padding: 20px 30px;
+      border-radius: 20px;
+
+      &:hover{
+        display: block;
+      }
+      
+      .header__menu-list {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .header {
+    padding: 23px 25px;
+
+    .logo {
+      gap: 10px;
+
+      .logo__img {
+        width: 35px;
+        height: 35px;
+      }
+
+      .logo__text {
+        .logo__text-title {
+          font-size: 15px;
+          margin-bottom: 0;
+        }
+
+        .logo__text-description {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .header__menu{
+      right: 22px;
+      top: 50px;
+      padding: 20px 25px;
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .header {
+    padding: 20px 20px;
+
+    .logo {
+      gap: 7px;
+
+      .logo__img {
+        width: 35px;
+        height: 35px;
+      }
+
+      .logo__text {
+        .logo__text-title {
+          font-size: 13px;
+        }
+
+        .logo__text-description {
+          font-size: 10px;
+        }
+      }
+    }
+
+    
+    .header__menu{
+      right: 18px;
+      top: 47px;
+    }
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .header {
+    .logo {
+      .logo__text {
+        .logo__text-description {
+          display: none;
         }
       }
     }

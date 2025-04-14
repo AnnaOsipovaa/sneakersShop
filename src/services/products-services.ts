@@ -20,4 +20,22 @@ export class ProductServices {
 
         return returnObject;
     }
+
+    static async getProduct(id: number): Promise<ServicesResponseType> {
+        const returnObject: ServicesResponseType = {
+            error: false,
+            redirect: null,
+            info: null
+        }
+
+        const response: ResponseType = await HttpUils.response('/product/' + id);
+
+        if (response.data && !response.error) {
+            returnObject.info = response.data;
+        } else {
+            returnObject.error = true;
+        }
+
+        return returnObject;
+    }
 }

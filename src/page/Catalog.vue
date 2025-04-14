@@ -3,15 +3,19 @@ import { computed, onMounted, ref, watch, Ref } from 'vue';
 import { ProductType } from "@/types/product.type";
 import Advertisement from '../components/Advertisement.vue';
 import CatalogItem from '../components/CatalogItem.vue';
+import Loader from '../components/Loader.vue';
 import { useProductsStore } from '../store/products';
 
 const productsStore = useProductsStore();
 
 const inputSearch: Ref<string> = ref('');
+const loaderOn: Ref<boolean> = ref(false);
 
 onMounted(async () => {
     if(productsStore.products.length === 0){
+        loaderOn.value = true;
         await productsStore.getProducts();
+        loaderOn.value = false;
     }
 })
 
@@ -31,6 +35,14 @@ function deleteToCart(product: ProductType): void {
     productsStore.deleteToCart(product);
 }
 
+function addToFavorites(product: ProductType): void {
+    productsStore.addToFavorites(product);
+}
+
+function deleteToFavorites(product: ProductType): void {
+    productsStore.deleteToFavorites(product);
+}
+
 </script>
 
 <template>
@@ -38,7 +50,7 @@ function deleteToCart(product: ProductType): void {
     
     <div class="sneakers">
         <div class="sneakers-header">
-            <h1 clapp="title_m">Все кроссовки</h1>
+            <h1 class="title_m">Все кроссовки</h1>
             <div class="input-search">
                 <div class="input-search__img">
                     <img src="image/loupe.svg" alt="поиск">
@@ -47,16 +59,19 @@ function deleteToCart(product: ProductType): void {
             </div>
         </div>
 
-        <div class="sneakers-list">
-            <CatalogItem 
+        <Loader v-if="loaderOn"></Loader>
+        <div v-else class="sneakers-list">
+            <CatalogItem
                 v-for="product in productList" 
                 :key=product.id
                 @addToCart = addToCart(product)
                 @deleteToCart = deleteToCart(product)
+                @addToFavorites = addToFavorites(product)
+                @deleteToFavorites = deleteToFavorites(product)
                 :title="product.title"
                 :img="product.imageUrl"
                 :price="product.price"
-                :inFavorites="false"
+                :inFavorites="product.inFavorites"
                 :inCart="product.inCart">
             </CatalogItem>
         </div>
@@ -67,44 +82,35 @@ function deleteToCart(product: ProductType): void {
 @use "../assets/styles/variables.scss";
 @use "../assets/styles/mixins.scss";
 
-.sneakers-header{
+.sneakers{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 36px;
+    flex-direction: column;
+    flex-grow: 1;
 
-    .input-search{
-        position: relative;
-    
-        .input-search__input{
-            max-width: 250px;
-            box-sizing: border-box;
-            border: 1px solid variables.$text-color1;
-            border-radius: 10px;
-            padding: 13px 18px 13px 46px;
-            font-weight: 400;
-            font-size: 14px;
-            line-height: 100%;
+    .sneakers-header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 36px;
+    }
+}
 
-            &:placeholder{
-                font-size: 14px;
-                color: variables.$placeholder-color;
-            }
-        }
-
-        .input-search__img{
-            @include mixins.flex-center;
-            position: absolute;
-            top: 15px;
-            left: 18px;
+@media screen and (max-width: 1130px){
+    .sneakers{
+        .sneakers-header{
+            flex-direction: column;
+            align-items: stretch;
+            gap: 20px;
         }
     }
 }
 
-.sneakers-list{
-    display: grid;
-    justify-content: center;
-    gap: 40px;
-    grid-template-columns: repeat(auto-fill, 210px);
+@media screen and (max-width: 600px){
+    .sneakers{
+        .sneakers-header{
+            gap: 10px;
+            padding-bottom: 20px;
+        }
+    }
 }
 </style>

@@ -18,7 +18,7 @@ const priceFormatted = computed<string>(() => {
 <template>
     <div class="cart-item">
         <div class="cart-item__img">
-            <img :src="'image/' + img" alt="фото">
+            <img :src="'image/sneakers/' + img" alt="фото">
         </div>
         <div class="cart-item__details">
             <div class="cart-item__title product-title">{{ title }}</div>
@@ -39,6 +39,7 @@ const priceFormatted = computed<string>(() => {
     display: flex;
     align-items: center;
     padding: 20px;
+    position: relative;
 
     .cart-item__img{
         width: 70px;
@@ -59,7 +60,9 @@ const priceFormatted = computed<string>(() => {
     }
 
     .cart-item__delete{
-        align-self: flex-end;
+        position: absolute;
+        right: 20px;
+        bottom: 15px;
         cursor: pointer;
     }
 }

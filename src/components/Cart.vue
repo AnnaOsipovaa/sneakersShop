@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from 'vue';
+import { onBeforeMount, computed, ref, Ref } from 'vue';
 import { ProductType } from "@/types/product.type";
 import { useProductsStore } from '../store/products';
 import CartItem from './CartItem.vue';
@@ -27,12 +27,12 @@ async function deleteToCart(product: ProductType): Promise<void> {
     productsStore.deleteToCart(product);
 }
 
-const productInCart = computed<ProductType[]>(() => {
-    return productsStore.products.filter((product: ProductType) => product.inCart === true);
-});
-
 const cartSum = computed<string>(() => {
     return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
+})
+
+const productsInCart = computed<ProductType[]>(() => {
+    return productsStore.products.filter((product: ProductType) => product.inCart);
 })
 </script>
 
@@ -41,9 +41,10 @@ const cartSum = computed<string>(() => {
         <div @click="closingCart" class="fon" :class="{ 'fon__open' : openCart, 'fon__close' : closeCart && !openCart}"></div>
         <div class="cart" :class="{ 'cart__open' : openCart, 'cart__close' : closeCart && !openCart}">
             <div class="cart__title title_s">Корзина</div>
-            <template v-if="productInCart.length !== 0">
+            <div class="cart__cross" @click="closingCart">✕</div>
+            <template v-if="productsInCart.length !== 0">
                 <div class="cart__list">
-                    <CartItem v-for="product in productInCart" 
+                    <CartItem v-for="product in productsInCart" 
                         :key="product.id"
                         @deleteToCart = deleteToCart(product)
                         :title="product.title"
@@ -109,6 +110,15 @@ const cartSum = computed<string>(() => {
 
     .cart__title{
         margin-bottom: 30px;
+    }
+
+    .cart__cross{
+        font-size: 26px;
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        color: variables.$text-color;
     }
 
     .cart__list{
@@ -206,6 +216,18 @@ const cartSum = computed<string>(() => {
     100%{
         opacity: 0;
         display: none;
+    }
+}
+
+@media screen and (max-width: 500px){
+    .cart {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 370px){
+    .cart {
+        padding: 20px;
     }
 }
 </style>

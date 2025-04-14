@@ -80,7 +80,8 @@ window.addEventListener('resize', () => {
 @use "../assets/styles/variables.scss";
 @use "../assets/styles/mixins.scss";
 
-$arrow-size: 35px;
+$arrow-size_m: 35px;
+$arrow-size_s: 25px;
 
 .advertisement {
   position: relative;
@@ -111,11 +112,11 @@ $arrow-size: 35px;
   .advertisement__arrow {
     @include mixins.flex-center;
     position: absolute;
-    right: math.div(-$arrow-size, 2);
+    right: math.div(-$arrow-size_m, 2);
     top: 50%;
     transform: translateY(-50%) scale(1);
-    width: $arrow-size;
-    height: $arrow-size;
+    width: $arrow-size_m;
+    height: $arrow-size_m;
     border-radius: 50%;
     background: variables.$container-color;
     cursor: pointer;
@@ -155,6 +156,23 @@ $arrow-size: 35px;
   }
   100% {
     opacity: 1;
+  }
+}
+
+
+@media screen and (max-width: 900px){
+  .advertisement {
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 600px){
+  .advertisement {
+    .advertisement__arrow {
+      right: math.div(-$arrow-size_s, 2);
+      width: $arrow-size_s;
+      height: $arrow-size_s;
+    }
   }
 }
 </style>

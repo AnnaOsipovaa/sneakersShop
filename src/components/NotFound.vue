@@ -35,6 +35,8 @@ defineProps<{
     flex-direction: column;
     flex-grow: 1;
     text-align: center;
+    padding: 15px;
+    box-sizing: border-box;
 
     .not-found__img{
         width: 120px;
@@ -53,14 +55,43 @@ defineProps<{
     .not-found__text{
         font-weight: 400;
         font-size: 16px;
-        line-height: 24px;
+        line-height: 16px;
         color: variables.$text-color;
         margin-bottom: 41px;
     }
 
     .not-found__btn{
+        max-width: 100%;
         width: 245px;
     }
 }
 
+@media screen and (max-width: 800px){
+    .not-found{
+        .not-found__img{
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+
+        .not-found__title{
+            margin-bottom: 5px;
+        }
+
+        .not-found__text{
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+    }
+}
+
+@media screen and (max-width: 400px){
+    .not-found{
+        .not-found__img{
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+    }
+}
 </style>
