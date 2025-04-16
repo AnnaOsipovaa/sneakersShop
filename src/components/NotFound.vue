@@ -54,7 +54,6 @@ defineProps<{
     .not-found__text{
         font-weight: 400;
         font-size: 16px;
-        line-height: 16px;
         color: variables.$text-color;
         margin-bottom: 41px;
     }

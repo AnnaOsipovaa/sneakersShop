@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, Ref, computed } from 'vue';
+import { onMounted, ref, Ref, watch } from 'vue';
 import { useProductsStore } from '../store/products';  
 import { ProductType } from "@/types/product.type";
 import CatalogItem from '../components/CatalogItem.vue';
@@ -11,13 +11,18 @@ const router = useRouter();
 const productsStore = useProductsStore();
 
 const loaderOn: Ref<boolean> = ref(false);
+const favoritesProduct: Ref<ProductType[]> = ref([]);
 
 onMounted(async () => {
-    if(productsStore.products.length === 0){
-        loaderOn.value = true;
-        await productsStore.getProducts();
-        loaderOn.value = false;
-    }
+    watch(
+        productsStore.listIdProductsInFavorites, 
+        async () => {
+            loaderOn.value = true;
+            favoritesProduct.value = await productsStore.getFavorites();
+            loaderOn.value = false;
+        },
+        { immediate: true }
+    )
 })
 
 function goBack(): void {
@@ -35,15 +40,11 @@ function deleteToCart(product: ProductType): void {
 function deleteToFavorites(product: ProductType): void {
     productsStore.deleteToFavorites(product);
 }
-
-const productsInFavorites = computed<ProductType[]>(() => {
-    return productsStore.products.filter((product: ProductType) => product.inFavorites);
-})
 </script>
 
 <template>
     <Loader v-if="loaderOn"></Loader>
-    <NotFound v-else-if="productsInFavorites.length === 0" @goBack="goBack"
+    <NotFound v-else-if="favoritesProduct.length === 0" @goBack="goBack"
         title="Нет избранных товаров"
         description="Вы ничего не добавили в избранное"
         img="emoji-1.png"
@@ -53,7 +54,7 @@ const productsInFavorites = computed<ProductType[]>(() => {
         <h1 class="title_m favorites-title">Избранное</h1>
         <div class="sneakers-list">
             <CatalogItem
-                v-for="product in productsInFavorites" 
+                v-for="product in favoritesProduct" 
                 :key=product.id
                 @addToCart = addToCart(product)
                 @deleteToCart = deleteToCart(product)
@@ -62,7 +63,7 @@ const productsInFavorites = computed<ProductType[]>(() => {
                 :img="product.imageUrl"
                 :price="product.price"
                 :inFavorites="true"
-                :inCart="product.inCart">
+                :inCart="productsStore.checkProductInCart(product.id)">
             </CatalogItem>
         </div>
     </template>

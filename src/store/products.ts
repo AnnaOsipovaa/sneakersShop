@@ -3,112 +3,131 @@ import { computed, reactive, Reactive, Ref, ref } from 'vue';
 import { ProductServices } from '../services/products-services';
 import { ProductType } from '@/types/product.type';
 import { ServicesResponseType } from '@/types/services-response.type';
+import { CartItemLocalStorageType } from '@/types/cart-item-local-storage.type';
 
 export const useProductsStore = defineStore('products', () => {
   const products: Ref<ProductType[]> = ref([]);
+  const listIdProductsInFavorites: Ref<number[]> = ref([]);
+  const listIdAndPriceProductsInCart: Ref<CartItemLocalStorageType[]> = ref([]);
 
-  let listIdProductsInCart: number[] = [];
-  let listIdProductsInFavorites: number[] = [];
-
-  const cartSum = computed<number>(() => {
-    let sum: number = 0;
-    products.value.forEach((product: ProductType) => {
-      if (product.inCart) {
-        sum += product.price;
-      }
-    })
-    return sum;
-  });
+  let productsUploaded: ProductType[] = [];
 
   const favoritesCount = computed<number>(() => {
     let count: number = 0;
-    products.value.forEach((product: ProductType) => {
-      if (product.inFavorites) {
-        count++;
-      }
-    })
+    listIdProductsInFavorites.value.forEach(() => count++);
     return count;
+  });
+
+  const cartSum = computed<number>(() => {
+    let sum: number = 0;
+    listIdAndPriceProductsInCart.value.forEach((product: CartItemLocalStorageType) => sum += product.price);
+    return sum;
   });
 
   async function getProducts(): Promise<void> {
     const response: ServicesResponseType = await ProductServices.getProducts();
-    if (response.error && !response.info) {
-      return;
-    }
-
+    if (response.error && !response.info) return;
     products.value = response.info;
-    setProductFlag();
+
+    addProductsInUploaded(response.info);
   }
 
-  function setProductFlag(): void {
-    if (listIdProductsInCart.length === 0) {
-      listIdProductsInCart = getListIdProducts('cart');
+  function addProductsInUploaded(list: ProductType[]) {
+    list.forEach((product: ProductType) => {
+      productsUploaded.push(product);
+    })
+  }
+
+  async function getProduct(id: number): Promise<ProductType | null> {
+    const product = productsUploaded.find((product: ProductType) => product.id === id);
+    if (product) {
+      return product;
     }
 
-    if (listIdProductsInFavorites.length === 0) {
-      listIdProductsInFavorites = getListIdProducts('favorites');
-    }
+    const response: ServicesResponseType = await ProductServices.getProduct(id);
+    if (response.error && !response.info) return null;
+    productsUploaded.push(response.info);
 
-    products.value.forEach((product: ProductType) => {
-      const productInCart: boolean = listIdProductsInCart.some((productId: number) => productId === product.id);
-      product.inCart = productInCart;
-
-      const productInFavoritesList: boolean = listIdProductsInFavorites.some((productId: number) => productId === product.id);
-      product.inFavorites = productInFavoritesList;
-    });
+    return getProduct(id);
   }
 
 
-  function addToCart(product: ProductType): void {
-    if (product.inCart) return;
+  async function getFavorites(): Promise<ProductType[]> {
+    let result: ProductType[] = [];
 
-    product.inCart = true;
-
-    listIdProductsInCart.push(product.id)
-    updateListIdLocalStorage('cart', listIdProductsInCart);
+    for (let i = 0; i < listIdProductsInFavorites.value.length; i++) {
+      const product = await getProduct(listIdProductsInFavorites.value[i]);
+      if (product) {
+        result.push(product);
+      }
+    }
+    return result;
   }
 
-  function deleteToCart(product: ProductType): void {
-    if (!product.inCart) return;
-
-    product.inCart = false;
-
-    let productIndex = listIdProductsInCart.findIndex((productId: number) => productId === product.id);
-
-    if (productIndex > -1) {
-      listIdProductsInCart.splice(productIndex, 1);
-      updateListIdLocalStorage('cart', listIdProductsInCart);
-    }
+  function checkProductInFavorites(id: number): boolean {
+    return listIdProductsInFavorites.value.some((productId: number) => productId === id);
   }
 
   function addToFavorites(product: ProductType): void {
-    if (product.inFavorites) return;
-
-    product.inFavorites = true;
-
-    listIdProductsInFavorites.push(product.id)
-    updateListIdLocalStorage('favorites', listIdProductsInFavorites);
+    listIdProductsInFavorites.value.push(product.id);
+    updateListIdLocalStorage('favorites', listIdProductsInFavorites.value);
   }
 
   async function deleteToFavorites(product: ProductType): Promise<void> {
-    if (!product.inFavorites) return;
-
-    product.inFavorites = false;
-
-    let productIndex = listIdProductsInFavorites.findIndex((productId: number) => productId === product.id);
+    let productIndex = listIdProductsInFavorites.value.findIndex((productId: number) => productId === product.id);
 
     if (productIndex > -1) {
-      listIdProductsInFavorites.splice(productIndex, 1);
-      updateListIdLocalStorage('favorites', listIdProductsInFavorites);
+      listIdProductsInFavorites.value.splice(productIndex, 1);
+      updateListIdLocalStorage('favorites', listIdProductsInFavorites.value);
     }
   }
 
-  function updateListIdLocalStorage(listName: string, newList: number[]) {
+
+  async function getCart(): Promise<ProductType[]> {
+    let result: ProductType[] = [];
+     
+    for (let i = 0; i < listIdAndPriceProductsInCart.value.length; i++) {
+      const product = await getProduct(listIdAndPriceProductsInCart.value[i].id);
+      if (product) {
+        result.push(product);
+      }
+    }
+    return result;
+  }
+
+  function checkProductInCart(id: number): boolean {
+    return listIdAndPriceProductsInCart.value.some((product: CartItemLocalStorageType) => product.id === id);
+  }
+
+  function addToCart(product: ProductType): void {
+    listIdAndPriceProductsInCart.value.push({
+      id: product.id,
+      price: product.price
+    });
+    updateListIdLocalStorage('cart', listIdAndPriceProductsInCart.value);
+  }
+
+  function deleteToCart(product: ProductType): void {
+    let productIndex = listIdAndPriceProductsInCart.value.findIndex((productInCart: CartItemLocalStorageType) => productInCart.id === product.id);
+
+    if (productIndex > -1) {
+      listIdAndPriceProductsInCart.value.splice(productIndex, 1);
+      updateListIdLocalStorage('cart', listIdAndPriceProductsInCart.value);
+    }
+  }
+
+  
+  function updateListIdLocalStorage(listName: string, newList: number[] | CartItemLocalStorageType[]) {
     localStorage.setItem(listName, JSON.stringify(newList));
   }
 
-  function getListIdProducts(listName: string): number[] {
-    let result: number[] = [];
+  function getInfoInLocalStorege() {
+    listIdProductsInFavorites.value = getListIdProducts('favorites') as number[];
+    listIdAndPriceProductsInCart.value = getListIdProducts('cart') as CartItemLocalStorageType[];
+  }
+
+  function getListIdProducts(listName: string): number[] | CartItemLocalStorageType[] {
+    let result: number[] | CartItemLocalStorageType[] = [];
     const listId: string | null = localStorage.getItem(listName);
     if (listId) {
       const listIdJson: number[] = JSON.parse(listId);
@@ -122,7 +141,7 @@ export const useProductsStore = defineStore('products', () => {
 
   return {
     products,
-    listIdProductsInCart,
+    listIdAndPriceProductsInCart,
     listIdProductsInFavorites,
     cartSum,
     favoritesCount,
@@ -130,6 +149,12 @@ export const useProductsStore = defineStore('products', () => {
     addToCart,
     deleteToCart,
     addToFavorites,
-    deleteToFavorites  
+    deleteToFavorites,
+
+    checkProductInCart,
+    checkProductInFavorites,
+    getFavorites,
+    getCart,
+    getInfoInLocalStorege
   }
 })
