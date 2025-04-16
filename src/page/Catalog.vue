@@ -71,8 +71,8 @@ function deleteToFavorites(product: ProductType): void {
                 :title="product.title"
                 :img="product.imageUrl"
                 :price="product.price"
-                :inFavorites="product.inFavorites"
-                :inCart="product.inCart">
+                :inFavorites="productsStore.checkProductInFavorites(product.id)"
+                :inCart="productsStore.checkProductInCart(product.id)">
             </CatalogItem>
         </div>
     </div>

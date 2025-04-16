@@ -12,6 +12,10 @@ const openCart: Ref<boolean> = ref(false);
 function toggleCart(): void {
     openCart.value = !openCart.value;
 }
+
+onBeforeMount(() => {
+    productsStore.getInfoInLocalStorege();
+})
 </script>
 
 <template>
