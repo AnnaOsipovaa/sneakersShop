@@ -35,7 +35,7 @@ const priceFormatted = computed<string>(() => {
         <div class="catalog-item__img">
             <img :src="'image/sneakers/' + img" alt="фото">
         </div>
-        <div class="catalog-item__title product-title">{{ title }}</div>
+        <div class="catalog-item__title text_s">{{ title }}</div>
         <div class="catalog-item__block-price">
             <div class="catalog-item__price">
                 <div class="catalog-item__price-title">Цена:</div>

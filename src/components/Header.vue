@@ -50,7 +50,7 @@ const cartSum = computed<string>(() => {
           </RouterLink>
         </li>
         <li class="header__menu-item">
-          <RouterLink :to="{ name: 'favorites'}" class="header__menu-link">
+          <RouterLink :to="{ name: 'profile'}" class="header__menu-link">
             <div class="header__menu-icon">
               <img src="image/icon-user.svg" alt="user" />
             </div>
@@ -158,7 +158,6 @@ const cartSum = computed<string>(() => {
           .header__menu-count{
             min-width: 18px;
             min-height: 18px;
-            box-sizing: border-box;
             position: absolute;
             border-radius: 50%;
             font-size: 11px;
@@ -173,7 +172,6 @@ const cartSum = computed<string>(() => {
     }
   }
 }
-
 
 @media screen and (max-width: 1130px){
   .header {

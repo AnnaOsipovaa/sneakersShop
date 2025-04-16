@@ -36,7 +36,6 @@ defineProps<{
     flex-grow: 1;
     text-align: center;
     padding: 15px;
-    box-sizing: border-box;
 
     .not-found__img{
         width: 120px;
@@ -63,6 +62,11 @@ defineProps<{
     .not-found__btn{
         max-width: 100%;
         width: 245px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 17px 31px;
+        border-radius: 18px;
     }
 }
 

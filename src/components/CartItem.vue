@@ -21,7 +21,7 @@ const priceFormatted = computed<string>(() => {
             <img :src="'image/sneakers/' + img" alt="фото">
         </div>
         <div class="cart-item__details">
-            <div class="cart-item__title product-title">{{ title }}</div>
+            <div class="cart-item__title text_s">{{ title }}</div>
             <div class="price">{{ priceFormatted }}</div>
         </div>
         <div class="cart-item__delete" @click="$emit('deleteToCart')">

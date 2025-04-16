@@ -104,7 +104,6 @@ const productsInCart = computed<ProductType[]>(() => {
     z-index: 5;
     padding: 32px 30px;
     background: variables.$container-color;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
 
@@ -152,6 +151,11 @@ const productsInCart = computed<ProductType[]>(() => {
     .cart__action{
         .cart__btn{
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 17px 31px;
+            border-radius: 18px;
         }
     }
 }
