@@ -17,6 +17,14 @@ onMounted(async () => {
         await productsStore.getProducts();
         loaderOn.value = false;
     }
+
+    if(productsStore.cart.length === 0){
+        await productsStore.getCart();
+    }
+
+    if(productsStore.favorites.length === 0){
+        await productsStore.getFavorites();
+    }
 })
 
 const productList = computed<ProductType[]>(() => {

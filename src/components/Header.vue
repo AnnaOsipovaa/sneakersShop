@@ -12,6 +12,13 @@ const cartSum = computed<string>(() => {
   return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
 });
 
+onMounted(async () => {
+    if(productsStore.cart.length === 0){
+      await productsStore.getCart();
+    }
+  }
+)
+
 </script>
 
 <template>

@@ -13,9 +13,13 @@ function toggleCart(): void {
     openCart.value = !openCart.value;
 }
 
-onBeforeMount(() => {
+onBeforeMount(() => { // если не авторизованы
     productsStore.getInfoInLocalStorege();
-})
+});
+
+window.addEventListener("beforeunload", function() { // если не авторизованы
+    productsStore.setInfoInLocalStorege();
+});
 </script>
 
 <template>

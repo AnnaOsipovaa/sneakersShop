@@ -17,15 +17,12 @@ const props = defineProps<{
 }>();
 
 const closeCart: Ref<boolean> = ref(false);
-const cartProduct: Ref<ProductType[]> = ref([]);
 
-watchEffect(
-    async () => {
-        if(props.openCart){
-            cartProduct.value = await productsStore.getCart();
-        }
+onMounted(async () => {
+    if(props.openCart && productsStore.cart.length === 0){
+        await productsStore.getCart();
     }
-)
+});
 
 const cartSum = computed<string>(() => {
     return StringUtils.toPriceFormat(productsStore.cartSum) + ' руб.';
@@ -47,9 +44,9 @@ function deleteToCart(product: ProductType): void {
         <div class="cart" :class="{ 'cart__open' : openCart, 'cart__close' : closeCart && !openCart}">
             <div class="cart__title title_s">Корзина</div>
             <div class="cart__cross" @click="closingCart">✕</div>
-            <template v-if="cartProduct.length !== 0">
+            <template v-if="productsStore.cart.length !== 0">
                 <div class="cart__list">
-                    <CartItem v-for="product in cartProduct" 
+                    <CartItem v-for="product in productsStore.cart" 
                         :key="product.id"
                         @deleteToCart = deleteToCart(product)
                         :title="product.title"

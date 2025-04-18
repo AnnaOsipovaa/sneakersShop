@@ -11,15 +11,16 @@ const router = useRouter();
 const productsStore = useProductsStore();
 
 const loaderOn: Ref<boolean> = ref(false);
-const favoritesProduct: Ref<ProductType[]> = ref([]);
 
 onMounted(async () => {
     watch(
         productsStore.listIdProductsInFavorites, 
         async () => {
-            loaderOn.value = true;
-            favoritesProduct.value = await productsStore.getFavorites();
-            loaderOn.value = false;
+            if(productsStore.favorites.length === 0){
+                loaderOn.value = true;
+                await productsStore.getFavorites();
+                loaderOn.value = false;
+            }
         },
         { immediate: true }
     )
@@ -44,7 +45,7 @@ function deleteToFavorites(product: ProductType): void {
 
 <template>
     <Loader v-if="loaderOn"></Loader>
-    <NotFound v-else-if="favoritesProduct.length === 0" @goBack="goBack"
+    <NotFound v-else-if="productsStore.favorites.length === 0" @goBack="goBack"
         title="Нет избранных товаров"
         description="Вы ничего не добавили в избранное"
         img="emoji-1.png"
@@ -54,7 +55,7 @@ function deleteToFavorites(product: ProductType): void {
         <h1 class="title_m favorites-title">Избранное</h1>
         <div class="sneakers-list">
             <CatalogItem
-                v-for="product in favoritesProduct" 
+                v-for="product in productsStore.favorites" 
                 :key=product.id
                 @addToCart = addToCart(product)
                 @deleteToCart = deleteToCart(product)
