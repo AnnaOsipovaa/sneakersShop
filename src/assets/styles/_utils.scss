@@ -152,6 +152,10 @@
     @include mixins.flex-center;
 }
 
+.fon_absolute{
+    position: absolute;
+}
+
 @media screen and (max-width: 1130px){
     .title_m{
         font-size: 25px;

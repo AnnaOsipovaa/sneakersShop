@@ -34,23 +34,6 @@ const productList = computed<ProductType[]>(() => {
         return productsStore.products;
     }
 });
-
-function addToCart(product: ProductType): void {
-    productsStore.addToCart(product);
-}
-
-function deleteToCart(product: ProductType): void {
-    productsStore.deleteToCart(product);
-}
-
-function addToFavorites(product: ProductType): void {
-    productsStore.addToFavorites(product);
-}
-
-function deleteToFavorites(product: ProductType): void {
-    productsStore.deleteToFavorites(product);
-}
-
 </script>
 
 <template>
@@ -72,15 +55,7 @@ function deleteToFavorites(product: ProductType): void {
             <CatalogItem
                 v-for="product in productList" 
                 :key=product.id
-                @addToCart = addToCart(product)
-                @deleteToCart = deleteToCart(product)
-                @addToFavorites = addToFavorites(product)
-                @deleteToFavorites = deleteToFavorites(product)
-                :title="product.title"
-                :img="product.imageUrl"
-                :price="product.price"
-                :inFavorites="productsStore.checkProductInFavorites(product.id)"
-                :inCart="productsStore.checkProductInCart(product.id)">
+                :product="product">
             </CatalogItem>
         </div>
     </div>

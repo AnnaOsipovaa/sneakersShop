@@ -1,51 +1,76 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, Ref, ref } from "vue"
 import { StringUtils } from "../utils/string-utils";
+import { ProductType } from "@/types/product.type";
+import { useProductsStore } from '../store/products';
+import Loader from '../components/Loader.vue';
 
-defineEmits<{
-    'addToCart': [],
-    'deleteToCart': []
-    'addToFavorites': [],
-    'deleteToFavorites': []
-}>();
+const productsStore = useProductsStore();
+const loaderOn: Ref<boolean> = ref(false);
 
 const props = defineProps<{
-    title: string,
-    img: string,
-    price: number,
-    inFavorites: boolean,
-    inCart: boolean
+    product: ProductType
 }>();
 
 const priceFormatted = computed<string>(() => {
-    return StringUtils.toPriceFormat(props.price) + ' руб.';
-})
+    return StringUtils.toPriceFormat(props.product.price) + ' руб.';
+});
+
+async function addToCart(): Promise<void> {
+    loaderOn.value = true;
+    await productsStore.addToCart(props.product);
+    loaderOn.value = false;
+}
+
+async function deleteToCart(): Promise<void> {
+    loaderOn.value = true;
+    await productsStore.deleteToCart(props.product);
+    loaderOn.value = false;
+}
+
+async function addToFavorites(): Promise<void> {
+    loaderOn.value = true;
+    await productsStore.addToFavorites(props.product);
+    loaderOn.value = false;
+}
+
+async function deleteToFavorites(): Promise<void> {
+    loaderOn.value = true;
+    await productsStore.deleteToFavorites(props.product);
+    loaderOn.value = false;
+}
+
 </script>
 
 <template>
+    
+
     <div class="catalog-item">
         <div class="catalog-item__action">
-            <div v-if="!inFavorites" class="catalog-item__is-favourites" @click="$emit('addToFavorites')">
+            <div v-if="loaderOn" class="loader-fon fon_absolute">
+                <Loader></Loader>
+            </div>
+            <div v-if="!productsStore.checkProductInFavorites(product.id)" class="catalog-item__is-favourites" @click="addToFavorites">
                 <img src="image/is-favorites-off.svg" alt="добавить в избранное">
             </div>
-            <div v-else class="catalog-item__is-favourites" @click="$emit('deleteToFavorites')">
+            <div v-else class="catalog-item__is-favourites" @click="deleteToFavorites">
                 <img src="image/is-favorites-on.svg" alt="удалить из избранного">
             </div>
         </div>
         <div class="catalog-item__img">
-            <img :src="'image/sneakers/' + img" alt="фото">
+            <img :src="'image/sneakers/' + product.imageUrl" alt="фото">
         </div>
-        <div class="catalog-item__title text_s">{{ title }}</div>
+        <div class="catalog-item__title text_s">{{ product.title }}</div>
         <div class="catalog-item__block-price">
             <div class="catalog-item__price">
                 <div class="catalog-item__price-title">Цена:</div>
                 <div class="price">{{ priceFormatted }}</div>
             </div>
             <div class="catalog-item__action">
-                <div v-if="!inCart" class="catalog-item__in-cart" @click="$emit('addToCart')">
+                <div v-if="!productsStore.checkProductInCart(product.id)" class="catalog-item__in-cart" @click="addToCart">
                     <img src="image/in-cart-off.svg" alt="добавить в корзину">
                 </div>
-                <div v-else class="catalog-item__action-item" @click="$emit('deleteToCart')">
+                <div v-else class="catalog-item__action-item" @click="deleteToCart">
                     <img src="image/in-cart-on.svg" alt="удалить из корзины">
                 </div>
             </div>
@@ -64,6 +89,7 @@ const priceFormatted = computed<string>(() => {
     display: flex;
     flex-direction: column;
     transition: 0.3s;
+    overflow: hidden;
 
     &:hover{
         box-shadow: variables.$box-shadow-lite;
@@ -113,6 +139,7 @@ const priceFormatted = computed<string>(() => {
         }
 
         .catalog-item__action{
+            position: relative;
             width: 31px;
             height: 32px;
             

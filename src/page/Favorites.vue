@@ -29,18 +29,6 @@ onMounted(async () => {
 function goBack(): void {
     router.go(-1);
 }
-
-function addToCart(product: ProductType): void {
-    productsStore.addToCart(product);
-}
-
-function deleteToCart(product: ProductType): void {
-    productsStore.deleteToCart(product);
-}
-
-function deleteToFavorites(product: ProductType): void {
-    productsStore.deleteToFavorites(product);
-}
 </script>
 
 <template>
@@ -57,14 +45,7 @@ function deleteToFavorites(product: ProductType): void {
             <CatalogItem
                 v-for="product in productsStore.favorites" 
                 :key=product.id
-                @addToCart = addToCart(product)
-                @deleteToCart = deleteToCart(product)
-                @deleteToFavorites = deleteToFavorites(product)
-                :title="product.title"
-                :img="product.imageUrl"
-                :price="product.price"
-                :inFavorites="true"
-                :inCart="productsStore.checkProductInCart(product.id)">
+                :product="product">
             </CatalogItem>
         </div>
     </template>
