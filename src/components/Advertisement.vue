@@ -1,44 +1,29 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef, watch, Ref, ShallowRef } from "vue";
-import { AdvertisementType } from "@/types/advertisement.type";
+import { onMounted, ref, useTemplateRef, watch, Ref } from "vue";
+import { useAdvertisementsStore } from "../store/advertisement";
 
+const advertisementsStore = useAdvertisementsStore();
 const currentSlide: Ref<number> = ref(0);
 const listSlide = useTemplateRef<HTMLElement>("slider-list");
-const advertisementList: Ref<AdvertisementType[]> = ref([]);
 
-onMounted(() => {
-    advertisementList.value = [
-        {
-            id: 1,
-            link: "",
-            img: "image/advertisements/advertisement1.png",
-        },
-        {
-            id: 3,
-            link: "",
-            img: "image/advertisements/advertisement1.png",
-        },
-        {
-            id: 7,
-            link: "",
-            img: "image/advertisements/advertisement1.png",
-        }
-    ];
+onMounted(async () => {
+  if(advertisementsStore.advertisements.length === 0){
+    await advertisementsStore.getAdvertisements();
+  }
 })
 
 watch( 
   () => currentSlide.value, 
   () => {
+    if(!listSlide || !listSlide.value) return;
 
-      if(!listSlide || !listSlide.value) return;
+    if (currentSlide.value === advertisementsStore.advertisements.length) {
+        currentSlide.value = 0;
+    } else if (currentSlide.value === -1) {
+        currentSlide.value = advertisementsStore.advertisements.length - 1;
+    }
 
-      if (currentSlide.value === advertisementList.value.length) {
-          currentSlide.value = 0;
-      } else if (currentSlide.value === -1) {
-          currentSlide.value = advertisementList.value.length - 1;
-      }
-
-      listSlide.value.style.transform = `translateX(-${currentSlide.value * listSlide.value.offsetWidth}px)`;
+    listSlide.value.style.transform = `translateX(-${currentSlide.value * listSlide.value.offsetWidth}px)`;
   }
 )
 
@@ -60,7 +45,7 @@ window.addEventListener('resize', () => {
             animationPreviousSlide: currentSlide === index + 1,
             animationCurrentSlide: currentSlide === index,
           }"
-          v-for="(advertisementItem, index) in advertisementList"
+          v-for="(advertisementItem, index) in advertisementsStore.advertisements"
           :key="advertisementItem.id"
         >
           <a :href="advertisementItem.link">
@@ -158,7 +143,6 @@ $arrow-size_s: 25px;
     opacity: 1;
   }
 }
-
 
 @media screen and (max-width: 900px){
   .advertisement {
