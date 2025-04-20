@@ -47,7 +47,7 @@ export class CartServices{
         }
 
         const response: ResponseType = await HttpUils.response('/cart/' + id, true, 'DELETE');
- 
+
         if (!response.error && response.data) {
             returnObject.info = response.data;
         } else {

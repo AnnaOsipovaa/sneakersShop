@@ -101,24 +101,34 @@ export const useProductsStore = defineStore('products', () => {
     let productIndex = favorites.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
     if (productIndex !== -1) return;
 
-    favorites.value.unshift(product);
-
     if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
-      await FavoritesServices.add({
+      const result: ServicesResponseType = await FavoritesServices.add({
         productId: product.id
       });
+
+      if(result.error){
+        alert('Произошла ошибка!');
+        return;
+      }
     }
+
+    favorites.value.unshift(product);
   }
 
   async function deleteToFavorites(product: ProductType): Promise<void> {
     let productIndex = favorites.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
     if (productIndex === -1) return;
-
-    favorites.value.splice(productIndex, 1);
     
     if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
-      await FavoritesServices.delete(product.id);
+      const result: ServicesResponseType = await FavoritesServices.delete(product.id);
+
+      if(result.error){
+        alert('Произошла ошибка!');
+        return;
+      }
     }
+
+    favorites.value.splice(productIndex, 1);
   }
 
   async function syncFavorites() {
@@ -174,14 +184,19 @@ export const useProductsStore = defineStore('products', () => {
     let productIndex = cart.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
     if (productIndex !== -1) return;
 
-    cart.value.unshift(product);
-
     if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
-      await CartServices.add({
+      const result: ServicesResponseType = await CartServices.add({
         productId: product.id,
         count: 1
       });
+
+      if(result.error){
+        alert('Произошла ошибка!');
+        return;
+      }
     }
+
+    cart.value.unshift(product);
   }
 
   async function deleteToCart(product: ProductType): Promise<void> {
@@ -189,11 +204,16 @@ export const useProductsStore = defineStore('products', () => {
 
     if (productIndex === -1) return;
 
-    cart.value.splice(productIndex, 1);
-
     if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
-      await CartServices.delete(product.id)
+      const result: ServicesResponseType = await CartServices.delete(product.id);
+
+      if(result.error){
+        alert('Произошла ошибка!');
+        return;
+      }
     }
+
+    cart.value.splice(productIndex, 1);
   }
 
   async function syncCart() {

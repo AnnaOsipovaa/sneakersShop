@@ -23,9 +23,9 @@ export class HttpUils {
         }
 
         let token: string | null = null;
-        if(authorization){
+        if (authorization) {
             token = StorageUtils.getAuthToken(StorageUtils.accessTokenKey);
-            if(token){
+            if (token) {
                 params.headers['x-auth-token'] = token;
             }
         }
@@ -38,16 +38,16 @@ export class HttpUils {
             result.error = true;
         }
 
-        if(response){
+        if (response) {
             if (response.status < 200 || response.status > 299) {
-                if(response.status === 401 && authorization){
-                    if(!token){
+                if (response.status === 401 && authorization) {
+                    if (!token) {
                         result.redirect = 'login';
-                    }else{
+                    } else {
                         const refresh: boolean = await AuthServices.refrech();
-                        if(!refresh){
+                        if (!refresh) {
                             result.redirect = 'login';
-                        }else{
+                        } else {
                             return await this.response(url, authorization, method, body);
                         }
                     }
@@ -56,7 +56,7 @@ export class HttpUils {
                 result.redirect = 'login';
             }
         }
-    
+
         return result
     }
 }
