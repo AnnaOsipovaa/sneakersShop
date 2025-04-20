@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, Ref, watchEffect } from 'vue';
-import { ProductType } from "@/types/product.type";
 import { useProductsStore } from '../store/products';
 import CartItem from './CartItem.vue';
 import NotFound from '../components/NotFound.vue';
@@ -32,10 +31,6 @@ function closingCart(): void {
     closeCart.value = true;
     emit('closeCart');
 }
-
-function deleteToCart(product: ProductType): void {
-    productsStore.deleteToCart(product);
-}
 </script>
 
 <template>
@@ -48,10 +43,7 @@ function deleteToCart(product: ProductType): void {
                 <div class="cart__list">
                     <CartItem v-for="product in productsStore.cart" 
                         :key="product.id"
-                        @deleteToCart = deleteToCart(product)
-                        :title="product.title"
-                        :img="product.imageUrl"
-                        :price="product.price"
+                        :product="product"
                     ></CartItem>
                 </div>
                 <div class="cart__price">

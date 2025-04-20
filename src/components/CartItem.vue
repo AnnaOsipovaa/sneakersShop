@@ -1,30 +1,35 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { StringUtils } from '../utils/string-utils';
+import { ProductType } from '../types/product.type';
+import { useProductsStore } from '../store/products';
 
-defineEmits(['deleteToCart']);
+const productsStore = useProductsStore();
+
 const props = defineProps<{
-    title: string,
-    img: string,
-    price: number
+    product: ProductType
 }>();
 
 const priceFormatted = computed<string>(() => {
-    return StringUtils.toPriceFormat(props.price) + ' руб.';
-})
+    return StringUtils.toPriceFormat(props.product.price) + ' руб.';
+});
+
+async function deleteToCart(): Promise<void> {
+    await productsStore.deleteToCart(props.product);
+}
 </script>
 
 
 <template>
     <div class="cart-item">
         <div class="cart-item__img">
-            <img :src="'image/sneakers/' + img" alt="фото">
+            <img :src="'image/sneakers/' + product.imageUrl" alt="фото">
         </div>
         <div class="cart-item__details">
-            <div class="cart-item__title text_s">{{ title }}</div>
+            <div class="cart-item__title text_s">{{ product.title }}</div>
             <div class="price">{{ priceFormatted }}</div>
         </div>
-        <div class="cart-item__delete" @click="$emit('deleteToCart')">
+        <div class="cart-item__delete" @click="deleteToCart">
             <img src="image/icon-delete.png" alt="удалить из корзины">
         </div>
     </div>
