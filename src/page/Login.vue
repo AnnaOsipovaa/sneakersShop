@@ -45,8 +45,10 @@ async function login(): Promise<void> {
         email: result.data.email
     });
     router.push({ name: 'profile' });
-    await productsStore.syncCart();
+    await productsStore.syncCart(); 
     await productsStore.getCart();
+    await productsStore.syncFavorites();
+    await productsStore.getFavorites();
 }
 
 function showError(inputError?: number, message: string = ''): void{

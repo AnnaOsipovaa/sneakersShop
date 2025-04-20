@@ -59,6 +59,8 @@ async function login(): Promise<void> {
     router.push({ name: 'profile' });
     await productsStore.syncCart();
     await productsStore.getCart();
+    await productsStore.syncFavorites();
+    await productsStore.getFavorites();
 }
 
 function showError(inputError?: number, message: string = ''): void{

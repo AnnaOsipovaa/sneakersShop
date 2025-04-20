@@ -5,7 +5,8 @@ import { ProductType } from '../types/product.type';
 import { ServicesResponseType } from '@/types/services-response.type';
 import { StorageUtils } from '../utils/storage-utils';
 import { CartServices } from '../services/cart-services';
-import { CartItemType } from '@/types/cart-item.type';
+import { CartItemType } from '../types/cart-item.type';
+import { FavoritesServices } from '../services/favorites-services';
 
 export const useProductsStore = defineStore('products', () => {
   const products: Ref<ProductType[]> = ref([]);
@@ -66,37 +67,73 @@ export const useProductsStore = defineStore('products', () => {
 
 
   async function getFavorites(): Promise<void> {
+    if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
+      favorites.value = await requestServerFavorites();
+    } else {
+      favorites.value = await requestLocalFavorites();
+    }
+  }
+
+  async function requestServerFavorites(): Promise<ProductType[]> {
+    const response = await FavoritesServices.getFavorites();
+    if (!response.error) {
+      return response.info;
+    }
+    return [];
+  }
+
+  async function requestLocalFavorites(): Promise<ProductType[]> {
     let result: ProductType[] = [];
-    for (let i = 0; i < listIdProductsInFavorites.length; i++) { // если не авторизованы
+    for (let i = 0; i < listIdProductsInFavorites.length; i++) {
       const product = await getProduct(listIdProductsInFavorites[i]);
       if (product) {
         result.unshift(product);
       }
     }
-    favorites.value = result;
+    return result;
   }
 
   function checkProductInFavorites(id: number): boolean {
     return favorites.value.some((product: ProductType) => product.id === id);
   }
 
-  function addToFavorites(product: ProductType): void {
+  async function addToFavorites(product: ProductType): Promise<void> {
     let productIndex = favorites.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
+    if (productIndex !== -1) return;
 
-    if (productIndex === -1) { // если авторизован + отправка на сервер
-      favorites.value.unshift(product);
+    favorites.value.unshift(product);
+
+    if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
+      await FavoritesServices.add({
+        productId: product.id
+      });
     }
   }
 
   async function deleteToFavorites(product: ProductType): Promise<void> {
     let productIndex = favorites.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
+    if (productIndex === -1) return;
 
-    if (productIndex !== -1) { // если авторизован + отправка на сервер
-      favorites.value.splice(productIndex, 1);
+    favorites.value.splice(productIndex, 1);
+    
+    if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
+      await FavoritesServices.delete(product.id);
     }
   }
 
+  async function syncFavorites() {
+    if (favorites.value.length === 0) return;
 
+    let list: number[] = [];
+
+    favorites.value.forEach(product => {
+      list.push(product.id)
+    });
+
+    await FavoritesServices.sync({
+      favorites: list
+    });
+  }
 
 
 
@@ -135,7 +172,6 @@ export const useProductsStore = defineStore('products', () => {
 
   async function addToCart(product: ProductType): Promise<void> {
     let productIndex = cart.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
-
     if (productIndex !== -1) return;
 
     cart.value.unshift(product);
@@ -144,7 +180,7 @@ export const useProductsStore = defineStore('products', () => {
       await CartServices.add({
         productId: product.id,
         count: 1
-      })
+      });
     }
   }
 
@@ -219,6 +255,7 @@ export const useProductsStore = defineStore('products', () => {
     syncCart,
     addToFavorites,
     deleteToFavorites,
+    syncFavorites,
     setInfoInLocalStorege,
     checkProductInCart,
     checkProductInFavorites,
