@@ -13,9 +13,9 @@ const cartSum = computed<string>(() => {
 });
 
 onMounted(async () => {
-  if(!productsStore.cartRequested){
-    await productsStore.getCart();
-  }
+  if(productsStore.cartRequested) return;
+  
+  await productsStore.getCart();
 });
 
 </script>

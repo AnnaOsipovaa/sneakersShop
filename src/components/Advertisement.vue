@@ -7,10 +7,10 @@ const currentSlide: Ref<number> = ref(0);
 const listSlide = useTemplateRef<HTMLElement>("slider-list");
 
 onMounted(async () => {
-  if(advertisementsStore.advertisements.length === 0){
-    await advertisementsStore.getAdvertisements();
-  }
-})
+  if(advertisementsStore.advertisements.length !== 0) return;
+
+  await advertisementsStore.getAdvertisements();
+});
 
 watch( 
   () => currentSlide.value, 

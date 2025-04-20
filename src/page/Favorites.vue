@@ -16,11 +16,11 @@ onMounted(async () => {
     watch(
         productsStore.listIdProductsInFavorites, 
         async () => {
-            if(!productsStore.favoritesRequested){
-                loaderOn.value = true;
-                await productsStore.getFavorites();
-                loaderOn.value = false;
-            }
+            if(productsStore.favoritesRequested) return;
+
+            loaderOn.value = true;
+            await productsStore.getFavorites();
+            loaderOn.value = false;
         },
         { immediate: true }
     )
