@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref, Ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useProductsStore } from '../store/products';
 import { AuthServices } from '../services/auth-services';
+import { CartServices } from '../services/cart-services';
 import { StorageUtils } from '../utils/storage-utils';
 import { ResponseType } from '../types/response.type';
 import Loader from '../components/Loader.vue';
-import { useRouter } from 'vue-router';
 import { ErrorInput } from '../enum/error-input.enum';
 
+const productsStore = useProductsStore();
 const router = useRouter();
 
 const email: Ref<string> = ref('');
@@ -19,13 +22,11 @@ async function login(): Promise<void> {
     if(!validation) return;
 
     loaderOn.value = true;
-    const result: ResponseType | null = await AuthServices.login({
+    const result: ResponseType = await AuthServices.login({
         email: email.value,
         password: password.value
     });
     loaderOn.value = false;
-
-    if(!result) return;
 
     if(result.error){
         switch (result.data.code) {
@@ -44,6 +45,8 @@ async function login(): Promise<void> {
         email: result.data.email
     });
     router.push({ name: 'profile' });
+    await productsStore.syncCart();
+    await productsStore.getCart();
 }
 
 function showError(inputError?: number, message: string = ''): void{

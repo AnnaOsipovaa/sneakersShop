@@ -18,14 +18,14 @@ onMounted(async () => {
         loaderOn.value = false;
     }
 
-    if(productsStore.cart.length === 0){
+    if(!productsStore.cartRequested){
         await productsStore.getCart();
     }
 
     if(productsStore.favorites.length === 0){
         await productsStore.getFavorites();
     }
-})
+});
 
 const productList = computed<ProductType[]>(() => {
     if(inputSearch.value){
@@ -33,7 +33,7 @@ const productList = computed<ProductType[]>(() => {
     }else{
         return productsStore.products;
     }
-})
+});
 
 function addToCart(product: ProductType): void {
     productsStore.addToCart(product);

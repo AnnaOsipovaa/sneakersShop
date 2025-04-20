@@ -13,11 +13,10 @@ const cartSum = computed<string>(() => {
 });
 
 onMounted(async () => {
-    if(productsStore.cart.length === 0){
-      await productsStore.getCart();
-    }
+  if(!productsStore.cartRequested){
+    await productsStore.getCart();
   }
-)
+});
 
 </script>
 

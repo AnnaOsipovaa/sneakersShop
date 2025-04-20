@@ -12,7 +12,7 @@ export class ProductServices {
 
         const response: ResponseType = await HttpUils.response('/product');
 
-        if (response.data && !response.error) {
+        if (!response.error && response.data) {
             returnObject.info = response.data;
         } else {
             returnObject.error = true;
@@ -30,7 +30,7 @@ export class ProductServices {
 
         const response: ResponseType = await HttpUils.response('/product/' + id);
 
-        if (response.data && !response.error) {
+        if (!response.error && response.data) {
             returnObject.info = response.data;
         } else {
             returnObject.error = true;

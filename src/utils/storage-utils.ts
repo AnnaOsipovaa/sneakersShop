@@ -39,4 +39,20 @@ export class StorageUtils {
                 return null;
         }
     }
+
+    public static updateListIdLocalStorage(listName: string, newList: number[]) {
+        localStorage.setItem(listName, JSON.stringify(newList));
+    }
+
+    public static getListIdProducts(listName: string): number[] {
+        let result: number[] = [];
+        const listId: string | null = localStorage.getItem(listName);
+        if (listId) {
+            const listIdJson: number[] = JSON.parse(listId);
+            if (listIdJson) {
+                result = listIdJson;
+            }
+        }
+        return result;
+    }
 }

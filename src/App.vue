@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router';
 import { Ref, ref, onBeforeMount } from 'vue';
 import { useProductsStore } from './store/products';
-
+import { StorageUtils } from './utils/storage-utils';
 import Header from './components/Header.vue';
 import Cart from './components/Cart.vue';
 
@@ -13,11 +13,15 @@ function toggleCart(): void {
     openCart.value = !openCart.value;
 }
 
-onBeforeMount(() => { // если не авторизованы
+onBeforeMount(() => {
+    if(StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) return;
+
     productsStore.getInfoInLocalStorege();
 });
 
-window.addEventListener("beforeunload", function() { // если не авторизованы
+window.addEventListener("beforeunload", function() {
+    if(StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) return;
+
     productsStore.setInfoInLocalStorege();
 });
 </script>

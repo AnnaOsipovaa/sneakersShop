@@ -19,7 +19,7 @@ const props = defineProps<{
 const closeCart: Ref<boolean> = ref(false);
 
 onMounted(async () => {
-    if(props.openCart && productsStore.cart.length === 0){
+    if(props.openCart && !productsStore.cartRequested){
         await productsStore.getCart();
     }
 });

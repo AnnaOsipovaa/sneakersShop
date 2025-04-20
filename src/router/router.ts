@@ -61,8 +61,9 @@ export const router: Router = createRouter({
 }); 
 
 router.afterEach((to) => {
-    const defaultTitle: string = 'Vue Sneakers';
-    document.title = <string>to.meta.title || defaultTitle
+    if(to.meta.title){
+        document.title = <string>to.meta.title;
+    }
 });
 
 router.beforeEach((to, from, next) => {
@@ -71,8 +72,11 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && noTokens) {
         next({ name: 'login' });
     } else {
+        if(!noTokens && (to.name === 'login' || to.name === 'signup')){
+            next({ name: 'profile' });
+        }
         next();
     }
-})
+});
 
  

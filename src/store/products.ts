@@ -1,13 +1,18 @@
 import { defineStore } from 'pinia';
 import { computed, reactive, Reactive, Ref, ref } from 'vue';
 import { ProductServices } from '../services/products-services';
-import { ProductType } from '@/types/product.type';
+import { ProductType } from '../types/product.type';
 import { ServicesResponseType } from '@/types/services-response.type';
+import { StorageUtils } from '../utils/storage-utils';
+import { CartServices } from '../services/cart-services';
+import { CartItemType } from '@/types/cart-item.type';
 
 export const useProductsStore = defineStore('products', () => {
   const products: Ref<ProductType[]> = ref([]);
   const cart: Ref<ProductType[]> = ref([]);
   const favorites: Ref<ProductType[]> = ref([]);
+
+  const cartRequested: Ref<boolean> = ref(false);
 
   let listIdProductsInFavorites: number[] = [];
   let listIdProductsInCart: number[] = [];
@@ -25,11 +30,6 @@ export const useProductsStore = defineStore('products', () => {
     cart.value.forEach((product: ProductType) => sum += product.price);
     return sum;
   });
-
-
-
-
-
 
   async function getProducts(): Promise<void> {
     const response: ServicesResponseType = await ProductServices.getProducts();
@@ -66,7 +66,7 @@ export const useProductsStore = defineStore('products', () => {
 
 
   async function getFavorites(): Promise<void> {
-    let result: ProductType[] = []; 
+    let result: ProductType[] = [];
     for (let i = 0; i < listIdProductsInFavorites.length; i++) { // если не авторизованы
       const product = await getProduct(listIdProductsInFavorites[i]);
       if (product) {
@@ -84,7 +84,7 @@ export const useProductsStore = defineStore('products', () => {
     let productIndex = favorites.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
 
     if (productIndex === -1) { // если авторизован + отправка на сервер
-      favorites.value.unshift(product);  
+      favorites.value.unshift(product);
     }
   }
 
@@ -102,75 +102,107 @@ export const useProductsStore = defineStore('products', () => {
 
 
   async function getCart(): Promise<void> {
+    cartRequested.value = true;
+    if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
+      cart.value = await requestServerCart();
+    } else {
+      cart.value = await requestLocalCart();
+    }
+  }
+
+  async function requestServerCart(): Promise<ProductType[]> {
+    const response = await CartServices.getCart();
+    if (!response.error) {
+      return response.info;
+    }
+    return [];
+  }
+
+  async function requestLocalCart(): Promise<ProductType[]> {
     let result: ProductType[] = [];
-    for (let i = 0; i < listIdProductsInCart.length; i++) { // если не авторизованы
+    for (let i = 0; i < listIdProductsInCart.length; i++) {
       const product = await getProduct(listIdProductsInCart[i]);
       if (product) {
         result.unshift(product);
       }
     }
-    cart.value = result;
+    return result;
   }
 
   function checkProductInCart(id: number): boolean {
     return cart.value.some((product: ProductType) => product.id === id);
   }
 
-  function addToCart(product: ProductType): void {
+  async function addToCart(product: ProductType): Promise<void> {
     let productIndex = cart.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
 
-    if (productIndex === -1) { // если авторизован + отправка на сервер
-      cart.value.unshift(product);  
+    if (productIndex !== -1) return;
+
+    cart.value.unshift(product);
+
+    if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
+      await CartServices.add({
+        productId: product.id,
+        count: 1
+      })
     }
   }
 
-  function deleteToCart(product: ProductType): void {
+  async function deleteToCart(product: ProductType): Promise<void> {
     let productIndex = cart.value.findIndex((productInCart: ProductType) => productInCart.id === product.id);
 
-    if (productIndex !== -1) { // если авторизован + отправка на сервер
-      cart.value.splice(productIndex, 1);
+    if (productIndex === -1) return;
+
+    cart.value.splice(productIndex, 1);
+
+    if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
+      await CartServices.delete(product.id)
     }
   }
 
-  
+  async function syncCart() {
+    if (cart.value.length === 0) return;
 
+    let list: CartItemType[] = [];
 
-  function updateListIdLocalStorage(listName: string, newList: number[]) {
-    localStorage.setItem(listName, JSON.stringify(newList));
+    cart.value.forEach(product => {
+      list.push({
+        id: product.id,
+        count: 1
+      })
+    });
+
+    await CartServices.sync({
+      cart: list
+    });
   }
+
 
   function setInfoInLocalStorege() {
-    let listIdCart: number[] = [];
+    const listIdCart: number[] = [];
     cart.value.forEach((product: ProductType) => {
       listIdCart.unshift(product.id);
     })
+    StorageUtils.updateListIdLocalStorage('cart', listIdCart);
 
-    let listIdFavorites: number[] = [];
+    const listIdFavorites: number[] = [];
     favorites.value.forEach((product: ProductType) => {
       listIdFavorites.unshift(product.id);
     })
-
-    updateListIdLocalStorage('cart', listIdCart);
-    updateListIdLocalStorage('favorites', listIdFavorites);
+    StorageUtils.updateListIdLocalStorage('favorites', listIdFavorites);
   }
 
   function getInfoInLocalStorege() {
-    listIdProductsInFavorites = getListIdProducts('favorites');
-    listIdProductsInCart = getListIdProducts('cart');
+    listIdProductsInFavorites = StorageUtils.getListIdProducts('favorites');
+    listIdProductsInCart = StorageUtils.getListIdProducts('cart');
   }
 
-  function getListIdProducts(listName: string): number[] {
-    let result: number[] = [];
-    const listId: string | null = localStorage.getItem(listName);
-    if (listId) {
-      const listIdJson: number[] = JSON.parse(listId);
-      if (listIdJson) {
-        result = listIdJson;
-      }
-    }
-    return result;
+  function reset() {
+    cart.value = [];
+    favorites.value = [];
+    listIdProductsInCart = [];
+    listIdProductsInFavorites = [];
   }
-
 
   return {
     products,
@@ -178,11 +210,13 @@ export const useProductsStore = defineStore('products', () => {
     favorites,
     listIdProductsInCart,
     listIdProductsInFavorites,
+    cartRequested,
     cartSum,
     favoritesCount,
     getProducts,
     addToCart,
     deleteToCart,
+    syncCart,
     addToFavorites,
     deleteToFavorites,
     setInfoInLocalStorege,
@@ -190,6 +224,7 @@ export const useProductsStore = defineStore('products', () => {
     checkProductInFavorites,
     getFavorites,
     getCart,
-    getInfoInLocalStorege
+    getInfoInLocalStorege,
+    reset
   }
 })

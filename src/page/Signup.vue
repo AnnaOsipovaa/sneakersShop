@@ -6,7 +6,9 @@ import { ResponseType } from '../types/response.type';
 import Loader from '../components/Loader.vue';
 import { useRouter } from 'vue-router';
 import { ErrorInput } from '../enum/error-input.enum';
+import { useProductsStore } from '../store/products';
 
+const productsStore = useProductsStore();
 const router = useRouter();
 
 const email: Ref<string> = ref('');
@@ -21,13 +23,11 @@ async function signup(): Promise<void> {
     if(!validation) return;
 
     loaderOn.value = true;
-    const result: ResponseType | null = await AuthServices.signup({
+    const result: ResponseType = await AuthServices.signup({
         email: email.value,
         password: password.value
     });
     loaderOn.value = false;
-
-    if(!result) return;
 
     if(result.error){
         switch (result.data.code) {
@@ -44,19 +44,21 @@ async function signup(): Promise<void> {
 
 async function login(): Promise<void> {
     loaderOn.value = true;
-    const result: ResponseType | null = await AuthServices.login({
+    const result: ResponseType = await AuthServices.login({
         email: email.value,
         password: password.value
     });
     loaderOn.value = false;
 
-    if(!result || result.error) return;
+    if(result.error) return;
 
     StorageUtils.setAuthInfo(result.data.accessToken, result.data.refreshToken, {
         name: result.data.name,
         email: result.data.email
     });
     router.push({ name: 'profile' });
+    await productsStore.syncCart();
+    await productsStore.getCart();
 }
 
 function showError(inputError?: number, message: string = ''): void{
