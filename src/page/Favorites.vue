@@ -16,7 +16,7 @@ onMounted(async () => {
     watch(
         productsStore.listIdProductsInFavorites, 
         async () => {
-            if(productsStore.favorites.length === 0){
+            if(!productsStore.favoritesRequested){
                 loaderOn.value = true;
                 await productsStore.getFavorites();
                 loaderOn.value = false;

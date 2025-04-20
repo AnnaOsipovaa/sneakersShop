@@ -14,6 +14,7 @@ export const useProductsStore = defineStore('products', () => {
   const favorites: Ref<ProductType[]> = ref([]);
 
   const cartRequested: Ref<boolean> = ref(false);
+  const favoritesRequested: Ref<boolean> = ref(false);
 
   let listIdProductsInFavorites: number[] = [];
   let listIdProductsInCart: number[] = [];
@@ -67,6 +68,8 @@ export const useProductsStore = defineStore('products', () => {
 
 
   async function getFavorites(): Promise<void> {
+    favoritesRequested.value = true;
+    
     if (StorageUtils.getAuthToken(StorageUtils.accessTokenKey)) {
       favorites.value = await requestServerFavorites();
     } else {
@@ -267,6 +270,7 @@ export const useProductsStore = defineStore('products', () => {
     listIdProductsInCart,
     listIdProductsInFavorites,
     cartRequested,
+    favoritesRequested,
     cartSum,
     favoritesCount,
     getProducts,

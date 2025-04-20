@@ -22,7 +22,7 @@ onMounted(async () => {
         await productsStore.getCart();
     }
 
-    if(productsStore.favorites.length === 0){
+    if(!productsStore.favoritesRequested){
         await productsStore.getFavorites();
     }
 });
