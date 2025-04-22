@@ -39,6 +39,7 @@ async function logout(): Promise<void> {
 
     StorageUtils.removeAuthInfo();
     productsStore.reset();
+    ordersStore.reset();
     router.push({ name: 'login' });
 }
 </script>

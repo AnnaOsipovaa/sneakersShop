@@ -261,6 +261,8 @@ export const useProductsStore = defineStore('products', () => {
     favorites.value = [];
     listIdProductsInCart = [];
     listIdProductsInFavorites = [];
+    cartRequested.value = false;
+    favoritesRequested.value = false;
   }
 
   return {

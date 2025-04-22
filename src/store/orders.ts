@@ -17,9 +17,15 @@ export const useOrdersStore = defineStore('orders', () => {
         orders.value = response.info;
     }
 
+    function reset() {
+        orders.value = [];
+        ordersRequested.value = false;
+    }
+
     return {
         orders,
         ordersRequested,
         getOrders,
+        reset
     }
 })
