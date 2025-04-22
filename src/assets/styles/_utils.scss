@@ -156,6 +156,22 @@
     position: absolute;
 }
 
+.scroll::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: transparent;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: variables.$button-color;
+}
+
+.scroll::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: transparent;
+}
+
 @media screen and (max-width: 1130px){
     .title_m{
         font-size: 25px;

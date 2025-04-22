@@ -9,6 +9,7 @@ const productsStore = useProductsStore();
 const loaderOn: Ref<boolean> = ref(false);
 
 const props = defineProps<{
+    actionsShow: boolean
     product: ProductType
 }>();
 
@@ -46,7 +47,7 @@ async function deleteToFavorites(): Promise<void> {
     
 
     <div class="catalog-item">
-        <div class="catalog-item__action">
+        <div v-if="actionsShow" class="catalog-item__action">
             <div v-if="loaderOn" class="loader-fon fon_absolute">
                 <Loader></Loader>
             </div>
@@ -66,7 +67,7 @@ async function deleteToFavorites(): Promise<void> {
                 <div class="catalog-item__price-title">Цена:</div>
                 <div class="price">{{ priceFormatted }}</div>
             </div>
-            <div class="catalog-item__action">
+            <div v-if="actionsShow" class="catalog-item__action">
                 <div v-if="!productsStore.checkProductInCart(product.id)" class="catalog-item__in-cart" @click="addToCart">
                     <img src="image/in-cart-off.svg" alt="добавить в корзину">
                 </div>
@@ -90,6 +91,7 @@ async function deleteToFavorites(): Promise<void> {
     flex-direction: column;
     transition: 0.3s;
     overflow: hidden;
+    max-width: 210px;
 
     &:hover{
         box-shadow: variables.$box-shadow-lite;

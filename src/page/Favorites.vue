@@ -45,6 +45,7 @@ function goBack(): void {
             <CatalogItem
                 v-for="product in productsStore.favorites" 
                 :key=product.id
+                :actionsShow="true"
                 :product="product">
             </CatalogItem>
         </div>

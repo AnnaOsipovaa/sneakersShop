@@ -55,6 +55,7 @@ const productList = computed<ProductType[]>(() => {
             <CatalogItem
                 v-for="product in productList" 
                 :key=product.id
+                :actionsShow="true"
                 :product="product">
             </CatalogItem>
         </div>
