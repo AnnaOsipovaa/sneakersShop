@@ -42,6 +42,10 @@ async function logout(): Promise<void> {
     ordersStore.reset();
     router.push({ name: 'login' });
 }
+
+function goToCatalog(): void {
+    router.push({ name: 'catalog' });
+}
 </script>
 
 <template>
@@ -61,9 +65,11 @@ async function logout(): Promise<void> {
             ></Order>
         </div>
         <NotFound v-else 
+            @go="goToCatalog"
             title="Нет заказов"
             description="Вы ещё не делали заказов"
             img="box.png"
+            buttonText="Перейти в каталог"
         >
         </NotFound>
     </div>

@@ -62,10 +62,11 @@ function closingCart(): void {
             </template>
 
             <NotFound v-else 
-                @goBack="closingCart"
+                @go="closingCart"
                 title="Корзина пуста"
                 description="Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."
                 img="box.png"
+                buttonText="Вернуться назад"
             >
             </NotFound>
         </div>

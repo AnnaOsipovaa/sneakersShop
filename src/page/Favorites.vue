@@ -33,10 +33,12 @@ function goBack(): void {
 
 <template>
     <Loader v-if="loaderOn"></Loader>
-    <NotFound v-else-if="productsStore.favorites.length === 0" @goBack="goBack"
+    <NotFound v-else-if="productsStore.favorites.length === 0" 
+        @go="goBack"
         title="Нет избранных товаров"
         description="Вы ничего не добавили в избранное"
         img="emoji-1.png"
+        buttonText="Вернуться назад"
         >
     </NotFound>
     <template v-else>

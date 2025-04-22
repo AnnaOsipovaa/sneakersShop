@@ -1,12 +1,13 @@
 <script setup lang="ts">
 defineEmits<{
-    'goBack': []
+    'go': []
 }>();
 
 defineProps<{
     title: string,
     description: string,
-    img: string
+    img: string,
+    buttonText: string
 }>();
 </script>
 
@@ -17,11 +18,11 @@ defineProps<{
         </div>
         <div class="not-found__title title_xs">{{ title }}</div>
         <div class="not-found__text">{{ description }}</div>
-        <button type="button" class="not-found__btn button-green" @click="$emit('goBack')">
+        <button type="button" class="not-found__btn button-green" @click="$emit('go')">
             <div class="button-green__btn">
                 <img src="image/arrow-back.png" alt="назад">
             </div>
-            <div class="not-found__btn-text button-green__text">Вернуться назад</div>
+            <div class="not-found__btn-text button-green__text">{{ buttonText }}</div>
         </button>
     </div>
 </template>
