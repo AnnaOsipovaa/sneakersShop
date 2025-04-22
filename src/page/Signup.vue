@@ -205,7 +205,7 @@ const validation = computed<boolean>(() => {
     .signup {
         .signup__block{
             .signup-form{
-                width: 100%;
+                width: 265px;
             }
         }
     }

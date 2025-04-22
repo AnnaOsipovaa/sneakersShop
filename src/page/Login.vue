@@ -162,7 +162,7 @@ const validation = computed<boolean>(() => {
     .login {
         .login__block{
             .login-form{
-                width: 100%;
+                width: 265px;
             }
         }
     }
