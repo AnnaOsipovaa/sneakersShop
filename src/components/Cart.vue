@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, Ref, watchEffect } from 'vue';
 import { useProductsStore } from '../store/products';
+import { OrderServices } from '../services/order-services';
 import CartItem from './CartItem.vue';
 import NotFound from '../components/NotFound.vue';
+import { ProductType } from '../types/product.type';
 import { StringUtils } from '../utils/string-utils';
+import { StorageUtils } from '../utils/storage-utils';
+import { ServicesResponseType } from '../types/services-response.type';
+import { OrderProductType } from '../types/order-product.type';
+import { UserInfoType } from "../types/user-info.type";
+import EmailForm from './EmailForm.vue';
+import Loader from './Loader.vue';
 
 const productsStore = useProductsStore();
 
@@ -16,6 +24,8 @@ const props = defineProps<{
 }>();
 
 const closeCart: Ref<boolean> = ref(false);
+const loaderOn: Ref<boolean> = ref(false);
+let orderEmail: string | null = null;
 
 onMounted(async () => {
     if(props.openCart && !productsStore.cartRequested){
@@ -31,11 +41,67 @@ function closingCart(): void {
     closeCart.value = true;
     emit('closeCart');
 }
+
+async function createOrder(): Promise<void>{
+    if(!orderEmail) {
+        let userinfo: UserInfoType | null = StorageUtils.getAuthUserInfo();
+
+        if(!userinfo || !userinfo.email) return toggleEmailForm();
+
+        orderEmail = userinfo.email;
+    }
+
+    const products: OrderProductType[] = [];
+    productsStore.cart.forEach((product: ProductType) => {
+        products.push({
+            idProduct: product.id,
+            price: product.price
+        })
+    });
+
+    if(products.length === 0 || productsStore.cartSum === 0) return;
+
+    loaderOn.value = true;
+    
+    const response: ServicesResponseType = await OrderServices.create({
+        email: orderEmail,
+        items: products,
+        sum: productsStore.cartSum
+    });
+    loaderOn.value = false;
+
+    if (!response.error) {
+       alert('Заказ успешно создан!');
+    }else{
+        alert('Возникла ошибка, повторите попытку позже.');
+    }
+
+    closingCart();
+    orderEmail = null;
+    productsStore.cart = [];
+}
+
+const openEmailForm: Ref<boolean> = ref(false);
+
+function toggleEmailForm(email?: string): void {
+    openEmailForm.value = !openEmailForm.value;
+    if(email){
+        orderEmail = email;
+        createOrder();
+    }
+}
 </script>
 
 <template>
+    <div v-if="loaderOn" class="fon fon_absolute" style="z-index: 30;">
+        <Loader></Loader>
+    </div>
+ 
+
+    <EmailForm :openEmailForm="openEmailForm" @closeEmailForm="toggleEmailForm"></EmailForm>
+
     <div>
-        <div @click="closingCart" class="fon" :class="{ 'fon__open' : openCart, 'fon__close' : closeCart && !openCart}"></div>
+        <div @click="closingCart" class="fon display_none" :class="{ 'fon__open' : openCart, 'fon__close' : closeCart && !openCart}"></div>
         <div class="cart" :class="{ 'cart__open' : openCart, 'cart__close' : closeCart && !openCart}">
             <div class="cart__title title_s">Корзина</div>
             <div class="cart__cross" @click="closingCart">✕</div>
@@ -52,7 +118,7 @@ function closingCart(): void {
                     <div class="price">{{ cartSum }}</div>
                 </div>
                 <div class="cart__action">
-                    <button type="button" class="cart__btn button-green">
+                    <button type="button" @click="createOrder" class="cart__btn button-green">
                         <div class="button-green__text">Оформить заказ</div>
                         <div class="button-green__btn">
                             <img src="image/arrow-next.svg" alt="вперед">
@@ -78,17 +144,6 @@ function closingCart(): void {
 @use "../assets/styles/variables.scss";
 @use "../assets/styles/mixins.scss";
 
-.fon{
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    background: variables.$fon-color;
-}
-
 .cart{
     transform: translateX(100%);
     position: fixed;
@@ -96,7 +151,7 @@ function closingCart(): void {
     right: 0;
     width: 385px;
     height: 100%;
-    z-index: 5;
+    z-index: 15;
     padding: 32px 30px;
     background: variables.$container-color;
     display: flex;

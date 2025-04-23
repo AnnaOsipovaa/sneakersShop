@@ -127,7 +127,7 @@ const validation = computed<boolean>(() => {
 </script>
 
 <template>
-    <div v-if="loaderOn" class="loader-fon">
+    <div v-if="loaderOn" class="fon">
         <Loader></Loader>
     </div>
 

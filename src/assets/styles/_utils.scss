@@ -141,7 +141,7 @@
     width: 100%;
 }
 
-.loader-fon{
+.fon{
     position: fixed;
     top: 0;
     left: 0;
@@ -154,6 +154,10 @@
 
 .fon_absolute{
     position: absolute;
+}
+
+.display_none{
+    display: none;
 }
 
 .scroll::-webkit-scrollbar {

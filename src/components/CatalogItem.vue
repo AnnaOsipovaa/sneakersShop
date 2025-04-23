@@ -48,7 +48,7 @@ async function deleteToFavorites(): Promise<void> {
 
     <div class="catalog-item">
         <div v-if="actionsShow" class="catalog-item__action">
-            <div v-if="loaderOn" class="loader-fon fon_absolute">
+            <div v-if="loaderOn" class="fon fon_absolute">
                 <Loader></Loader>
             </div>
             <div v-if="!productsStore.checkProductInFavorites(product.id)" class="catalog-item__is-favourites" @click="addToFavorites">

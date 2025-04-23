@@ -21,7 +21,7 @@ export class OrderServices{
         return returnObject;
     }
 
-    static async add(data: object): Promise<ServicesResponseType> {
+    static async create(data: object): Promise<ServicesResponseType> {
         const returnObject: ServicesResponseType = {
             error: false,
             redirect: null,
