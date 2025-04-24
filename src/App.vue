@@ -5,6 +5,7 @@ import { useProductsStore } from './store/products';
 import { StorageUtils } from './utils/storage-utils';
 import Header from './components/Header.vue';
 import Cart from './components/Cart.vue';
+import ProgressLine from './components/ProgressLine.vue';
 
 const productsStore = useProductsStore();
 const openCart: Ref<boolean> = ref(false);
@@ -27,6 +28,8 @@ window.addEventListener("beforeunload", function() {
 </script>
 
 <template>
+    <ProgressLine></ProgressLine>
+
     <Cart :openCart="openCart" @closeCart="toggleCart"></Cart>
 
     <div class="container">
