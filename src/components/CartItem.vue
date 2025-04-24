@@ -36,11 +36,11 @@ async function deleteToCart(): Promise<void> {
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
+@use "../assets/styles/variables.scss" as *;
 
 .cart-item{
-    border: 1px solid variables.$text-color1;
-    border-radius: variables.$border-radius-s;
+    border: 1px solid $text-color1;
+    border-radius: $border-radius-s;
     display: flex;
     align-items: center;
     padding: 20px;

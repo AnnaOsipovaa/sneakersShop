@@ -80,11 +80,11 @@ async function deleteToFavorites(): Promise<void> {
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
+@use "../assets/styles/variables.scss" as *;
 
 .catalog-item{
-    border: 1px solid variables.$text-color1;
-    border-radius: variables.$border-radius-m;
+    border: 1px solid $text-color1;
+    border-radius: $border-radius-m;
     padding: 30px 29px;
     position: relative;
     display: flex;
@@ -94,7 +94,7 @@ async function deleteToFavorites(): Promise<void> {
     max-width: 210px;
 
     &:hover{
-        box-shadow: variables.$box-shadow-lite;
+        box-shadow: $box-shadow-lite;
     }
 
     .catalog-item__is-favourites{
@@ -136,7 +136,7 @@ async function deleteToFavorites(): Promise<void> {
             font-size: 11px;
             line-height: 100%;
             text-transform: uppercase;
-            color: variables.$text-color3;
+            color: $text-color3;
             margin-bottom: 2px;
         }
 
@@ -177,7 +177,7 @@ async function deleteToFavorites(): Promise<void> {
 
 @media screen and (max-width: 500px){
     .catalog-item{
-        border-radius: 20px;
+        border-radius: $border-radius-s;
         padding: 15px 15px;
 
         .catalog-item__is-favourites{

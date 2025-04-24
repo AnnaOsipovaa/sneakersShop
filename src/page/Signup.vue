@@ -151,7 +151,7 @@ const validation = computed<boolean>(() => {
                     <div class="input-error__text">{{ errorRepeatPasswordText }}</div>
                 </div>
                 <div>
-                    <button type="button" @click="signup" :disabled=validation class="signup-form__btn button-green">Зарегистрироваться</button>
+                    <button type="button" @click="signup" :disabled=validation class="signup-form__btn button button-green">Зарегистрироваться</button>
                 </div>
             </form>
             <div class="signup__block-link">
@@ -182,16 +182,14 @@ const validation = computed<boolean>(() => {
             display: flex;
             flex-direction: column;
             gap: 17px;
-            border-radius: 20px;
+            border-radius: $border-radius-s;
             margin-bottom: 30px;
             width: 315px;
 
             .signup-form__btn{
                 width: 100%;
-                border-radius: 8px;
                 display: flex;
                 justify-content: center;
-                padding: 17px 31px;
             }
         }
 

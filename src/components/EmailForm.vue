@@ -45,7 +45,7 @@ function closingCart(): void {
                     <div class="input-error__text">{{ errorEmailText }}</div>
                 </div>
                 <div class="email-form__block-btn">
-                    <button type="button" @click="closingCart" :disabled="!validation" class="button-green email-form__form-btn">Готово</button>
+                    <button type="button" @click="closingCart" :disabled="!validation" class="button button-green">Готово</button>
                 </div>
             </form>
         </div>
@@ -53,7 +53,7 @@ function closingCart(): void {
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
+@use "../assets/styles/variables.scss" as *;
 @use "../assets/styles/mixins.scss" as *;
 
 .fon__email-form{
@@ -71,17 +71,12 @@ function closingCart(): void {
         .email-form__form{
             
             padding: 20px;
-            border-radius: 20px;
+            border-radius: $border-radius-s;
             background: white;
 
             .email-form__block-btn{
                 margin-top: 20px;
                 text-align: center;
-
-                .email-form__form-btn{
-                    padding: 15px 30px;
-                    border-radius: 12px;
-                }
             }
         }
     }

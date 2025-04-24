@@ -62,8 +62,8 @@ window.addEventListener('resize', () => {
 
 <style lang="scss" scoped>
 @use "sass:math";
-@use "../assets/styles/variables.scss";
-@use "../assets/styles/mixins.scss";
+@use "../assets/styles/variables.scss" as *;
+@use "../assets/styles/mixins.scss" as *;
 
 $arrow-size_m: 35px;
 $arrow-size_s: 25px;
@@ -95,7 +95,7 @@ $arrow-size_s: 25px;
   }
 
   .advertisement__arrow {
-    @include mixins.flex-center;
+    @include flex-center;
     position: absolute;
     right: math.div(-$arrow-size_m, 2);
     top: 50%;
@@ -103,7 +103,7 @@ $arrow-size_s: 25px;
     width: $arrow-size_m;
     height: $arrow-size_m;
     border-radius: 50%;
-    background: variables.$container-color;
+    background: $background-color1;
     cursor: pointer;
     box-shadow: 0px 0px 6px 0 #00000026;
     transition: 0.2s;

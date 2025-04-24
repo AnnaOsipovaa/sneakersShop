@@ -39,7 +39,7 @@ const orderSum = computed<string>(() => {
 .order{
     padding: 20px 15px;
     border: 1px solid $border-color;
-    border-radius: 20px;
+    border-radius: $border-radius-s;
     position: relative;
     
     &:not(:last-child){
@@ -51,7 +51,7 @@ const orderSum = computed<string>(() => {
         top: 9px;
         right: 8px;
         padding: 3px 9px;
-        border-radius: 20px;
+        border-radius: $border-radius-s;
         color: $text-color;
         background: $border-color;
         font-size: 12px;

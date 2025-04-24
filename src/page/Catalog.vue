@@ -63,8 +63,8 @@ const productList = computed<ProductType[]>(() => {
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
-@use "../assets/styles/mixins.scss";
+@use "../assets/styles/variables.scss" as *;
+@use "../assets/styles/mixins.scss" as *;
 
 .sneakers{
     display: flex;

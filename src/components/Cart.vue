@@ -118,9 +118,9 @@ function toggleEmailForm(email?: string): void {
                     <div class="price">{{ cartSum }}</div>
                 </div>
                 <div class="cart__action">
-                    <button type="button" @click="createOrder" class="cart__btn button-green">
-                        <div class="button-green__text">Оформить заказ</div>
-                        <div class="button-green__btn">
+                    <button type="button" @click="createOrder" class="cart__btn button button-green">
+                        <div>Оформить заказ</div>
+                        <div>
                             <img src="image/arrow-next.svg" alt="вперед">
                         </div>
                     </button>
@@ -141,8 +141,8 @@ function toggleEmailForm(email?: string): void {
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
-@use "../assets/styles/mixins.scss";
+@use "../assets/styles/variables.scss" as *;
+@use "../assets/styles/mixins.scss" as *;
 
 .cart{
     transform: translateX(100%);
@@ -153,7 +153,7 @@ function toggleEmailForm(email?: string): void {
     height: 100%;
     z-index: 15;
     padding: 32px 30px;
-    background: variables.$container-color;
+    background: $background-color1;
     display: flex;
     flex-direction: column;
 
@@ -167,7 +167,7 @@ function toggleEmailForm(email?: string): void {
         position: absolute;
         right: 10px;
         top: 10px;
-        color: variables.$text-color;
+        color: $text-color;
     }
 
     .cart__list{
@@ -194,7 +194,7 @@ function toggleEmailForm(email?: string): void {
 
         .cart__price-line{
             flex-grow: 1;
-            border-bottom: 1px dotted variables.$text-color3;
+            border-bottom: 1px dotted $text-color3;
         }
     }
 
@@ -204,8 +204,6 @@ function toggleEmailForm(email?: string): void {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 17px 31px;
-            border-radius: 18px;
         }
     }
 }

@@ -1,4 +1,4 @@
-@use './variables';
+@use './variables' as *;
 
 @font-face {
     font-family: 'Inter';
@@ -7,7 +7,7 @@
 
 body {
     color: black;
-    background: variables.$body-color;
+    background: $background-color3;
 
     #app {
         max-width: 1080px;
@@ -19,56 +19,26 @@ body {
     
         .container{
             flex-grow: 1;
-            background: variables.$container-color;
-            box-shadow: variables.$box-shadow-normal;
-            border-radius: variables.$border-radius-s;
+            background: $background-color1;
+            box-shadow: $box-shadow-normal;
+            border-radius: $border-radius-s;
             display: flex;
             flex-direction: column;
         }
+        
         .content{
             padding: 45px 60px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-
-            .sneakers-list{
-                display: grid;
-                justify-content: space-between;
-                gap: 40px;
-                grid-template-columns: repeat(4, minmax(150px, 210px));
-            }
         }
     }
-}
-
-a{
-    text-decoration: none;
-    color: black;
-}
-
-input{
-    border: none;
-    outline: none;
-}
-
-button{
-    border: none;
-    outline: none;
-    cursor: pointer;
 }
 
 @media screen and (max-width: 1130px){
     body{
         padding-left: 20px;
         padding-right: 20px;
-
-        #app {
-            .content{
-                .sneakers-list{
-                    gap: 15px;
-                }
-            }
-        }
     }
 }
 
@@ -87,29 +57,11 @@ button{
     }
 }
 
-@media screen and (max-width: 800px){
-    body{
-        #app {
-            .content{
-                .sneakers-list{
-                    grid-template-columns: repeat(3, minmax(150px, 210px));
-                }
-            }
-        }
-    }
-}
-
 @media screen and (max-width: 600px){
     body{
         #app {
             .content{
                 padding: 15px;
-
-                .sneakers-list{
-                    gap: 10px;
-                    justify-content: center;
-                    grid-template-columns: repeat(2, minmax(auto, 210px));
-                }
             }
         }
     }
@@ -119,6 +71,5 @@ button{
     body{
         padding-left: 10px;
         padding-right: 10px;
- 
     }
 }

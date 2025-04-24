@@ -5,17 +5,17 @@
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
-@use "../assets/styles/mixins.scss";
+@use "../assets/styles/variables.scss" as *;
+@use "../assets/styles/mixins.scss" as *;
 
 .loader-background{
-    @include mixins.flex-center;
+    @include flex-center;
     flex-grow: 1;
 
     .loader {
         width: 48px;
         height: 48px;
-        border: 5px solid variables.$button-color;
+        border: 5px solid $button-color;
         border-bottom-color: transparent;
         border-radius: 50%;
         display: inline-block;

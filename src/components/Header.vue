@@ -69,12 +69,12 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
-@use "../assets/styles/mixins.scss";
+@use "../assets/styles/variables.scss" as *;
+@use "../assets/styles/mixins.scss" as *;
 
 .header {
   padding: 43px 45px;
-  border-bottom: 1px solid variables.$border-color;
+  border-bottom: 1px solid $border-color;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -106,7 +106,7 @@ onMounted(async () => {
         font-weight: 400;
         font-size: 14px;
         line-height: 100%;
-        color: variables.$text-color;
+        color: $text-color;
       }
     }
   }
@@ -118,10 +118,10 @@ onMounted(async () => {
     cursor: pointer;
 
     .header__burger-menu-item{
-      background: variables.$text-color;
+      background: $text-color;
       width: 35px;
       height: 3px;
-      border-radius: 20px;
+      border-radius: $border-radius-s;
     }
   }
 
@@ -146,19 +146,19 @@ onMounted(async () => {
           }
 
           .header__menu-icon {
-            @include mixins.flex-center;
+            @include flex-center;
           }
 
           .header__menu-title {
             font-weight: 400;
             font-size: 14px;
             line-height: 100%;
-            color: variables.$text-color2;
+            color: $text-color2;
           }
 
           .header__menu-title_bold {
             font-weight: 600;
-            color: variables.$text-color-dark;
+            color: $text-color5;
           }
 
           .header__menu-count{
@@ -169,9 +169,9 @@ onMounted(async () => {
             font-size: 11px;
             top: -12px;
             right: -16px;
-            background: variables.$background-color;
-            color: variables.$text-color4;
-            @include mixins.flex-center;
+            background: $background-color2;
+            color: $text-color4;
+            @include flex-center;
           }
         }
       }
@@ -198,10 +198,10 @@ onMounted(async () => {
       right: 42px;
       top: 73px;
       z-index: 4;
-      background: variables.$container-color;
+      background: $background-color1;
       box-shadow: 0 10px 14px 0 rgb(0 0 0 / 20%);
       padding: 20px 30px;
-      border-radius: 20px;
+      border-radius: $border-radius-s;
 
       &:hover{
         display: block;

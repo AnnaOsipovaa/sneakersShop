@@ -53,7 +53,7 @@ function goToCatalog(): void {
         <div class="profile__header">
             <h1 class="title_m">Заказы</h1>
             <div>
-                <button type="button" @click="logout" class="profile__btn button-green">Выйти из личного кабинета</button>
+                <button type="button" @click="logout" class="button button-green">Выйти из личного кабинета</button>
             </div>
         </div>
 
@@ -86,11 +86,6 @@ function goToCatalog(): void {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
-
-        .profile__btn{
-            padding: 15px 20px;
-            border-radius: 18px;
-        }
     }
 }
 
@@ -100,11 +95,6 @@ function goToCatalog(): void {
             flex-direction: column-reverse;
             align-items: flex-start;
             gap: 20px;
-
-            .profile__btn{
-                padding: 12px 15px;
-                border-radius: 12px;
-            }
         }
     }
 }

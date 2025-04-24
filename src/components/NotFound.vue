@@ -18,21 +18,21 @@ defineProps<{
         </div>
         <div class="not-found__title title_xs">{{ title }}</div>
         <div class="not-found__text">{{ description }}</div>
-        <button type="button" class="not-found__btn button-green" @click="$emit('go')">
-            <div class="button-green__btn">
+        <button type="button" class="not-found__btn button button-green" @click="$emit('go')">
+            <div>
                 <img src="image/arrow-back.png" alt="назад">
             </div>
-            <div class="not-found__btn-text button-green__text">{{ buttonText }}</div>
+            <div class="not-found__btn-text">{{ buttonText }}</div>
         </button>
     </div>
 </template>
 
 <style lang="scss" scoped>
-@use "../assets/styles/variables.scss";
-@use "../assets/styles/mixins.scss";
+@use "../assets/styles/variables.scss" as *;
+@use "../assets/styles/mixins.scss" as *;
 
 .not-found{
-    @include mixins.flex-center;
+    @include flex-center;
     flex-direction: column;
     flex-grow: 1;
     text-align: center;
@@ -55,18 +55,15 @@ defineProps<{
     .not-found__text{
         font-weight: 400;
         font-size: 16px;
-        color: variables.$text-color;
+        color: $text-color;
         margin-bottom: 41px;
     }
 
     .not-found__btn{
-        max-width: 100%;
         width: 245px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 17px 31px;
-        border-radius: 18px;
+        justify-content: space-around;
     }
 }
 
